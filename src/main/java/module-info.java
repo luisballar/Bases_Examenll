@@ -7,6 +7,6 @@ module cr.ac.ucr.paraiso.ie.bases_examenll {
     requires org.mongodb.bson;
 
 
-    opens cr.ac.ucr.paraiso.ie.bases_examenll.client to javafx.fxml;
+    opens cr.ac.ucr.paraiso.ie.bases_examenll to javafx.fxml;
     exports cr.ac.ucr.paraiso.ie.bases_examenll;
 }

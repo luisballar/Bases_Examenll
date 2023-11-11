@@ -1,4 +1,4 @@
-package cr.ac.ucr.paraiso.ie.bases_examenll.client;
+package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -99,7 +99,7 @@ public class MainWindow {
     }
 
     @FXML
-    void mask_button_clicked(ActionEvent event) {
+    void mask_button_clicked(ActionEvent event) throws IOException {
 
     }
 
@@ -114,17 +114,24 @@ public class MainWindow {
     }
 
     @FXML
-    void viewAlbumBut_clicked(ActionEvent event) {
+    void viewAlbumBut_clicked(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("albumWindow.fxml"));
+
+        Scene scene = new Scene(loader.load());
+        Stage nuevoStage = new Stage();
+        nuevoStage.setScene(scene);
+        nuevoStage.show();
 
     }
 
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
+
         Scene scene = new Scene(loader.load());
         Stage nuevoStage = new Stage();
         nuevoStage.setScene(scene);
-
+        nuevoStage.show();
     }
 
     @FXML

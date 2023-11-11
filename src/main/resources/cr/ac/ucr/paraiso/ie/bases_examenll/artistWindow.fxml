@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="field" prefHeight="574.0" prefWidth="1166.0" style="-fx-background-color: #34495E;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.ucr.paraiso.ie.bases_examenll.client.MainWindow">
+<AnchorPane fx:id="field" prefHeight="574.0" prefWidth="1166.0" style="-fx-background-color: #34495E;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.ucr.paraiso.ie.bases_examenll.ArtistWindow">
     <children>
         <Button fx:id="deleteButton" layoutX="204.0" layoutY="428.0" mnemonicParsing="false" onAction="#deleteButton_clicked" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: #1C2833;" text="Eliminar" textFill="WHITE">
             <font>

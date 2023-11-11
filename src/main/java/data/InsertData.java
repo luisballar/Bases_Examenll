@@ -1,4 +1,4 @@
-package cr.ac.ucr.paraiso.ie.bases_examenll.data;
+package data;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

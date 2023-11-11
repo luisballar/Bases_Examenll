@@ -1,4 +1,4 @@
-package cr.ac.ucr.paraiso.ie.bases_examenll.client;
+package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

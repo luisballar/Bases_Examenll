@@ -1,4 +1,4 @@
-package cr.ac.ucr.paraiso.ie.bases_examenll.domain;
+package domain;
 
 public class Song {
 
