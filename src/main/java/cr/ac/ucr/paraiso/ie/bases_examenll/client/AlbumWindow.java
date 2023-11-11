@@ -2,8 +2,6 @@ package cr.ac.ucr.paraiso.ie.bases_examenll.client;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -11,29 +9,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-
-public class MainWindow {
+public class AlbumWindow {
 
     @FXML
     private Button addButton;
 
     @FXML
-    private TextField albumField;
-
-    @FXML
-    private TableColumn<?, ?> artist;
-
-    @FXML
-    private TextField artistField;
-
-    @FXML
     private Button deleteButton;
-
-    @FXML
-    private TextField durationField;
 
     @FXML
     private Button exitBut;
@@ -42,13 +25,22 @@ public class MainWindow {
     private AnchorPane field;
 
     @FXML
+    private TableColumn<?, ?> genreColumn;
+
+    @FXML
     private TextField genreField;
+
+    @FXML
+    private TableColumn<?, ?> idColumn;
 
     @FXML
     private CheckBox logicDelete;
 
     @FXML
     private Button mask_button;
+
+    @FXML
+    private TableColumn<?, ?> nameColumn;
 
     @FXML
     private TextField nameField;
@@ -78,8 +70,13 @@ public class MainWindow {
     private Button viewSongsBut;
 
     @FXML
-    void addButton_clcked(ActionEvent event) {
+    private TableColumn<?, ?> yearColumn;
 
+    @FXML
+    private TextField yearField;
+
+    @FXML
+    void addButton_clcked(ActionEvent event) {
 
     }
 
@@ -119,11 +116,7 @@ public class MainWindow {
     }
 
     @FXML
-    void viewArtistBut_clicked(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
-        Scene scene = new Scene(loader.load());
-        Stage nuevoStage = new Stage();
-        nuevoStage.setScene(scene);
+    void viewArtistBut_clicked(ActionEvent event) {
 
     }
 
@@ -136,15 +129,5 @@ public class MainWindow {
     void viewSongsBut_clicked(ActionEvent event) {
 
     }
-
-
-    private boolean isActive(Stage stage){
-        if (stage == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
 
 }
