@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -28,7 +29,10 @@ public class ArtistWindow {
     private AnchorPane field;
 
     @FXML
-    private TextField genreField;
+    private ComboBox<?> filterBox;
+
+    @FXML
+    private ChoiceBox<?> genreBox;
 
     @FXML
     private TextField lastNameField;
@@ -49,7 +53,7 @@ public class ArtistWindow {
     private Button searchButton;
 
     @FXML
-    private ChoiceBox<?> searchChoiceBox;
+    private TextField searchField;
 
     @FXML
     private TableView<?> tableView;
@@ -81,6 +85,11 @@ public class ArtistWindow {
 
     @FXML
     void exitBut_clicked(ActionEvent event) {
+
+    }
+
+    @FXML
+    void filterBox_action(ActionEvent event) {
 
     }
 

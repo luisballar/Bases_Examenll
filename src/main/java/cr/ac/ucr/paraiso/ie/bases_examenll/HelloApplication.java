@@ -12,9 +12,14 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("mainWindow.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Hello!");
+        stage.setTitle("Disquera");
         stage.setScene(scene);
+        MainWindow mainWindow = fxmlLoader.getController();
+        mainWindow.setImages(scene);
+        stage.setResizable(false);
         stage.show();
+
+
 
     }
 

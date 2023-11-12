@@ -6,17 +6,19 @@ public class Song {
     private String title;
     private String artist;
     private String genre;
+    private String album;
 
     private String year;
 
     public Song() {
     }
 
-    public Song(int muiscID, String title, String artist, String genre, String year) {
+    public Song(int muiscID, String title, String artist, String genre, String album, String year) {
         this.muiscID = muiscID;
         this.title = title;
         this.artist = artist;
         this.genre = genre;
+        this.album = album;
         this.year = year;
     }
 
@@ -52,6 +54,14 @@ public class Song {
         this.genre = genre;
     }
 
+    public String getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
     public String getYear() {
         return year;
     }
@@ -67,6 +77,7 @@ public class Song {
                 ", title='" + title + '\'' +
                 ", artist='" + artist + '\'' +
                 ", genre='" + genre + '\'' +
+                ", album='" + album + '\'' +
                 ", year='" + year + '\'' +
                 '}';
     }

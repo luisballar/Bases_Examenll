@@ -1,45 +1,43 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class MainWindow {
+    public MainWindow() {
+    }
 
     @FXML
     private Button addButton;
 
     @FXML
-    private TextField albumField;
+    private ChoiceBox<?> albumBox;
 
     @FXML
     private TableColumn<?, ?> artist;
 
     @FXML
-    private TextField artistField;
+    private ChoiceBox<?> artisteBox;
 
     @FXML
     private Button deleteButton;
-
-    @FXML
-    private TextField durationField;
 
     @FXML
     private Button exitBut;
 
     @FXML
     private AnchorPane field;
+
+    @FXML
+    private ComboBox<?> filterBox;
 
     @FXML
     private TextField genreField;
@@ -57,7 +55,7 @@ public class MainWindow {
     private Button searchButton;
 
     @FXML
-    private ChoiceBox<?> searchChoiceBox;
+    private TextField searchField;
 
     @FXML
     private TableView<?> tableView;
@@ -77,9 +75,14 @@ public class MainWindow {
     @FXML
     private Button viewSongsBut;
 
+
+    @FXML
+    void filterBox_action(ActionEvent event) {
+
+    }
+
     @FXML
     void addButton_clcked(ActionEvent event) {
-
 
     }
 
@@ -88,9 +91,10 @@ public class MainWindow {
 
     }
 
+    // close all stages
     @FXML
     void exitBut_clicked(ActionEvent event) {
-
+        Platform.exit();
     }
 
     @FXML
@@ -113,6 +117,7 @@ public class MainWindow {
 
     }
 
+    // abrir stage Album
     @FXML
     void viewAlbumBut_clicked(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("albumWindow.fxml"));
@@ -124,6 +129,7 @@ public class MainWindow {
 
     }
 
+    // abrir stage Artist
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
@@ -144,7 +150,10 @@ public class MainWindow {
 
     }
 
-
+    // setear imagenes en los botones
+    public void setImages(Scene actual){
+        actual.getStylesheets().add(getClass().getResource("/butStyle.css").toExternalForm());
+    }
     private boolean isActive(Stage stage){
         if (stage == null) {
             return false;

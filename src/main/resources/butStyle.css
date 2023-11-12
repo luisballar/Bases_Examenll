@@ -1,0 +1,34 @@
+/* styles.css */
+
+.boton-music {
+    -fx-graphic: url('images/music.png');
+    -fx-content-display: top; /* Coloca la imagen en la parte superior del texto */
+    -fx-padding: 10; /* Ajusta el espacio alrededor de la imagen y el texto */
+}
+
+.boton-album {
+    -fx-graphic: url('images/album.png');
+    -fx-content-display: top; /* Coloca la imagen en la parte superior del texto */
+    -fx-padding: 10; /* Ajusta el espacio alrededor de la imagen y el texto */
+}
+
+
+.boton-microphone {
+    -fx-graphic: url('images/microphone.png');
+    -fx-content-display: center; /* Coloca la imagen en la parte superior del texto */
+    -fx-padding: 10; /* Ajusta el espacio alrededor de la imagen y el texto */
+}
+
+
+.boton-stacked {
+    -fx-graphic: url('images/stacked-files.png');
+    -fx-content-display: center; /* Coloca la imagen en la parte superior del texto */
+    -fx-padding: 9; /* Ajusta el espacio alrededor de la imagen y el texto */
+}
+
+
+.boton-exit {
+    -fx-graphic: url('images/exit.png');
+    -fx-content-display: center; /* Coloca la imagen en la parte superior del texto */
+    -fx-padding: 10; /* Ajusta el espacio alrededor de la imagen y el texto */
+}
