@@ -25,4 +25,11 @@ public class InsertData {
 
     }
 
+    public void insertDocument(Document document) {
+        // Realiza la inserción
+        collection.insertOne(document);
+        System.out.println("Agregado Correctamente");
+        mongoClient.close();
+    }
+
 }
