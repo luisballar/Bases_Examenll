@@ -21,11 +21,6 @@ public class HelloApplication extends Application {
         stage.setResizable(false);
         stage.show();
 
-        //InsertData insert = new InsertData("mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority","luisballar","Song");
-
-        //Document document = new Document("clave", "valor");
-        //insert.insertDocument(document);
-
 
 
     }

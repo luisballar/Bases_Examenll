@@ -2,9 +2,12 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import data.InsertData;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -13,8 +16,11 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainWindow {
+public class MainWindow implements Initializable {
+
     public MainWindow() {
     }
 
@@ -43,7 +49,7 @@ public class MainWindow {
     private ComboBox<?> filterBox;
 
     @FXML
-    private TextField genreField;
+    private ChoiceBox<String> genreBox;
 
     @FXML
     private CheckBox logicDelete;
@@ -95,7 +101,7 @@ public class MainWindow {
     void addButton_clcked(ActionEvent event) {
         Document document = new Document("_id",new ObjectId())
                 .append("title", nameField.getText())
-                .append("genre",genreField.getText())
+                .append("genre",genreBox.getValue())
                 .append("album", albumBox.getValue())
                 .append("artist", artisteBox.getValue());
 
@@ -186,4 +192,60 @@ public class MainWindow {
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+
+        String[] genres = {
+                "Rock",
+                "Pop",
+                "Hip-hop",
+                "Jazz",
+                "Electrónica",
+                "Clásica",
+                "Country",
+                "Reggae",
+                "Reggaeton",
+                "Blues",
+                "Metal",
+                "Rap",
+                "Indie",
+                "Folk",
+                "Punk",
+                "Soul",
+                "R&B",
+                "Funk",
+                "Disco",
+                "Gospel",
+                "Ska",
+                "Experimental",
+                "World",
+                "Ambient",
+                "Dubstep",
+                "Trap",
+                "Reguetón",
+                "Cumbia",
+                "Salsa",
+                "Merengue",
+                "Bachata",
+                "Flamenco",
+                "Tango",
+                "Fusion",
+                "Chillout",
+                "Synthwave",
+                "Grime",
+                "Nu Metal",
+                "Opera",
+                "Hard Rock",
+                "Bluegrass",
+                "Grunge",
+                "Samba",
+                "Techno"
+
+        };
+
+
+        genreBox.getItems().addAll(genres);
+
+    }
 }
