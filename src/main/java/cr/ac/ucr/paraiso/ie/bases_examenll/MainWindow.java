@@ -91,6 +91,7 @@ public class MainWindow implements Initializable {
     private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
     private String dataBase = "C20937";
     private String collectionName = "Song";
+    private ArtistWindow artistWindow;
 
     @FXML
     void filterBox_action(ActionEvent event) {
@@ -161,8 +162,11 @@ public class MainWindow implements Initializable {
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
         loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
-
         scene = new Scene(loader.load());
+
+        artistWindow = loader.getController();
+        artistWindow.setImages(scene);
+
         nuevoStage = new Stage();
         nuevoStage.setScene(scene);
         nuevoStage.show();
@@ -192,9 +196,9 @@ public class MainWindow implements Initializable {
     }
 
 
+    // inicializar los choiceBox
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
 
         String[] genres = {
                 "Rock",
@@ -243,9 +247,8 @@ public class MainWindow implements Initializable {
                 "Techno"
 
         };
-
-
         genreBox.getItems().addAll(genres);
+
 
     }
 }

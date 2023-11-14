@@ -55,21 +55,21 @@
             </font></Button>
         <AnchorPane layoutY="2.0" prefHeight="574.0" prefWidth="88.0">
             <children>
-                <SplitPane dividerPositions="0.5" layoutY="-8.0" orientation="VERTICAL" prefHeight="582.0" prefWidth="88.0" style="-fx-background-color: #1C2833;">
+                <SplitPane dividerPositions="0.5086206896551724" layoutY="-8.0" orientation="VERTICAL" prefHeight="582.0" prefWidth="88.0" style="-fx-background-color: #1C2833;">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="86.0">
                             <children>
-                                <Button fx:id="viewSongsBut" layoutX="19.0" layoutY="34.0" mnemonicParsing="false" onAction="#viewSongsBut_clicked" prefHeight="46.0" prefWidth="49.0" style="-fx-background-color: white;" textFill="WHITE">
+                                <Button fx:id="viewSongsBut" layoutX="19.0" layoutY="34.0" mnemonicParsing="false" onAction="#viewSongsBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-music" textFill="WHITE">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="viewArtistBut" layoutX="19.0" layoutY="121.0" mnemonicParsing="false" onAction="#viewArtistBut_clicked" prefHeight="46.0" prefWidth="49.0" style="-fx-background-color: white;" textFill="WHITE">
+                                <Button fx:id="viewArtistBut" layoutX="19.0" layoutY="119.0" mnemonicParsing="false" onAction="#viewArtistBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-microphone" textFill="WHITE">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="viewAlbumBut" layoutX="19.0" layoutY="215.0" mnemonicParsing="false" onAction="#viewAlbumBut_clicked" prefHeight="46.0" prefWidth="49.0" style="-fx-background-color: white;" textFill="WHITE">
+                                <Button fx:id="viewAlbumBut" layoutX="19.0" layoutY="206.0" mnemonicParsing="false" onAction="#viewAlbumBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-album" textFill="WHITE">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
@@ -78,12 +78,12 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="86.0" style="-fx-background-color: #1C2833;">
                             <children>
-                                <Button fx:id="exitBut" layoutX="19.0" layoutY="227.0" mnemonicParsing="false" onAction="#exitBut_clicked" prefHeight="46.0" prefWidth="49.0" style="-fx-background-color: white;" textFill="WHITE">
+                                <Button fx:id="exitBut" layoutX="19.0" layoutY="213.0" mnemonicParsing="false" onAction="#exitBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-exit" textFill="WHITE">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="viewColectBut" layoutX="19.0" layoutY="156.0" mnemonicParsing="false" onAction="#viewColectBut_clicked" prefHeight="46.0" prefWidth="49.0" style="-fx-background-color: white;" textFill="WHITE">
+                                <Button fx:id="viewColectBut" layoutX="19.0" layoutY="129.0" mnemonicParsing="false" onAction="#viewColectBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-stacked" textFill="WHITE">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
                                     </font>
@@ -94,8 +94,10 @@
                 </SplitPane>
             </children>
         </AnchorPane>
-      <ChoiceBox fx:id="genreBox" layoutX="208.0" layoutY="197.0" prefWidth="150.0" />
-      <TextField fx:id="searchField" layoutX="434.0" layoutY="66.0" prefHeight="36.0" prefWidth="253.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
-      <ComboBox fx:id="filterBox" layoutX="700.0" layoutY="66.0" onAction="#filterBox_action" prefHeight="36.0" prefWidth="108.0" />
+        <ChoiceBox fx:id="albumBox" layoutX="212.0" layoutY="139.0" prefWidth="150.0" />
+        <ChoiceBox fx:id="artisteBox" layoutX="212.0" layoutY="195.0" prefWidth="150.0" />
+        <TextField fx:id="searchField" layoutX="434.0" layoutY="68.0" prefHeight="36.0" prefWidth="253.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
+        <ComboBox fx:id="filterBox" layoutX="699.0" layoutY="68.0" onAction="#filterBox_action" prefHeight="36.0" prefWidth="108.0" />
+        <ChoiceBox fx:id="genreBox" layoutX="212.0" layoutY="78.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

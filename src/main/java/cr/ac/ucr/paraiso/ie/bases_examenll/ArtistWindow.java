@@ -2,6 +2,7 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -131,6 +132,10 @@ public class ArtistWindow {
     @FXML
     void viewSongsBut_clicked(ActionEvent event) {
 
+    }
+
+    public void setImages(Scene actual){
+        actual.getStylesheets().add(getClass().getResource("/butStyle.css").toExternalForm());
     }
 
 }
