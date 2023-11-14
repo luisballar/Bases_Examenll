@@ -94,10 +94,8 @@
                 </SplitPane>
             </children>
         </AnchorPane>
-        <ChoiceBox fx:id="albumBox" layoutX="212.0" layoutY="139.0" prefWidth="150.0" />
-        <ChoiceBox fx:id="artisteBox" layoutX="212.0" layoutY="195.0" prefWidth="150.0" />
         <TextField fx:id="searchField" layoutX="434.0" layoutY="68.0" prefHeight="36.0" prefWidth="253.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
         <ComboBox fx:id="filterBox" layoutX="699.0" layoutY="68.0" onAction="#filterBox_action" prefHeight="36.0" prefWidth="108.0" />
-        <ChoiceBox fx:id="genreBox" layoutX="212.0" layoutY="78.0" prefWidth="150.0" />
+        <ChoiceBox fx:id="genreBox" layoutX="210.0" layoutY="197.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

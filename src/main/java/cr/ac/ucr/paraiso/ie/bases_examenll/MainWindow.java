@@ -92,6 +92,8 @@ public class MainWindow implements Initializable {
     private String dataBase = "C20937";
     private String collectionName = "Song";
     private ArtistWindow artistWindow;
+    private AlbumWindow albumWindow;
+    methodsInit methodsInit;
 
     @FXML
     void filterBox_action(ActionEvent event) {
@@ -148,29 +150,50 @@ public class MainWindow implements Initializable {
     // abrir stage Album
     @FXML
     void viewAlbumBut_clicked(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(getClass().getResource("albumWindow.fxml"));
+        if(albumWindow == null) {
+            loader = new FXMLLoader(getClass().getResource("albumWindow.fxml"));
+            scene = new Scene(loader.load());
 
-        scene = new Scene(loader.load());
-        nuevoStage = new Stage();
-        nuevoStage.setScene(scene);
-        nuevoStage.show();
+            albumWindow = loader.getController();
+            nuevoStage = new Stage();
+            nuevoStage.setScene(scene);
+            methodsInit.setImages(scene); // set buttons images
+            nuevoStage.show();
+
+
+        }else
+            nuevoStage.show();
+
         nuevoStage.setResizable(false);
 
+        int hashCode = albumWindow.hashCode();
+
+        // Imprimir el valor hash
+        System.out.println("nuevoStage direccion: " + hashCode);
     }
 
     // abrir stage Artist
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
-        scene = new Scene(loader.load());
 
-        artistWindow = loader.getController();
-        artistWindow.setImages(scene);
+        if(artistWindow == null){
+            loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
+            scene = new Scene(loader.load());
 
-        nuevoStage = new Stage();
-        nuevoStage.setScene(scene);
-        nuevoStage.show();
+            artistWindow = loader.getController();
+            methodsInit.setImages(scene);// set buttons images
+            nuevoStage = new Stage();
+            nuevoStage.setScene(scene);
+            nuevoStage.show();
+
+        }else
+            nuevoStage.show();
+
         nuevoStage.setResizable(false);
+        int hashCode = artistWindow.hashCode();
+
+        // Imprimir el valor hash
+        System.out.println("nuevoStage direccion: " + hashCode);
     }
 
     @FXML
@@ -183,10 +206,6 @@ public class MainWindow implements Initializable {
 
     }
 
-    // setear imagenes en los botones
-    public void setImages(Scene actual){
-        actual.getStylesheets().add(getClass().getResource("/butStyle.css").toExternalForm());
-    }
     private boolean isActive(Stage stage){
         if (stage == null) {
             return false;
@@ -200,55 +219,12 @@ public class MainWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        String[] genres = {
-                "Rock",
-                "Pop",
-                "Hip-hop",
-                "Jazz",
-                "Electrónica",
-                "Clásica",
-                "Country",
-                "Reggae",
-                "Reggaeton",
-                "Blues",
-                "Metal",
-                "Rap",
-                "Indie",
-                "Folk",
-                "Punk",
-                "Soul",
-                "R&B",
-                "Funk",
-                "Disco",
-                "Gospel",
-                "Ska",
-                "Experimental",
-                "World",
-                "Ambient",
-                "Dubstep",
-                "Trap",
-                "Reguetón",
-                "Cumbia",
-                "Salsa",
-                "Merengue",
-                "Bachata",
-                "Flamenco",
-                "Tango",
-                "Fusion",
-                "Chillout",
-                "Synthwave",
-                "Grime",
-                "Nu Metal",
-                "Opera",
-                "Hard Rock",
-                "Bluegrass",
-                "Grunge",
-                "Samba",
-                "Techno"
+        loader = new FXMLLoader(MainWindow.class.getResource("mainWindow.fxml"));
 
-        };
-        genreBox.getItems().addAll(genres);
-
+        scene = loader.getController();
+        methodsInit = new methodsInit();
+        //methodsInit.setImages(scene);
+        methodsInit.setGenres(genreBox);
 
     }
 }

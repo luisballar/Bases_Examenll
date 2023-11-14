@@ -17,7 +17,7 @@ public class HelloApplication extends Application {
         stage.setTitle("Disquera");
         stage.setScene(scene);
         MainWindow mainWindow = fxmlLoader.getController();
-        mainWindow.setImages(scene);
+        //mainWindow.setImages(scene);
         stage.setResizable(false);
         stage.show();
 
