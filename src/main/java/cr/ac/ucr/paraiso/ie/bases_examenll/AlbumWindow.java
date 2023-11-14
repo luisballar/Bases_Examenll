@@ -1,8 +1,12 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import data.MongoOperations;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -11,7 +15,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -71,6 +79,7 @@ public class AlbumWindow implements Initializable {
     @FXML
     private Button viewArtistBut;
 
+
     @FXML
     private Button viewColectBut;
 
@@ -83,11 +92,36 @@ public class AlbumWindow implements Initializable {
     @FXML
     private TextField yearField;
 
+    private FXMLLoader loader;
+    private Scene scene;
+    private Stage nuevoStage;
+    private Stage actual;
+    private MongoOperations insert;
+    private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
+    private String dataBase = "luisballar";
+    private String collectionName = "Album";
+    private MainWindow mainWindow;
+    private ArtistWindow artistWindow;
 
 
+    // insert data
     @FXML
     void addButton_clcked(ActionEvent event) {
+        insert = new MongoOperations(stringConnection, dataBase, collectionName);
 
+        Document document = new Document("_id",new ObjectId())
+                .append("title", nameField.getText())
+                .append("gender", albumBox.getValue())
+                .append("year_release", yearField.getText())
+                .append("logic_delete", 0);
+        ;
+
+
+        insert.insertDocument(document);
+
+        nameField.clear();
+        albumBox.getItems().clear();
+        yearField.clear();
     }
 
     @FXML
@@ -97,6 +131,7 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void exitBut_clicked(ActionEvent event) {
+        Platform.exit();
 
     }
 
@@ -111,37 +146,48 @@ public class AlbumWindow implements Initializable {
     }
 
     @FXML
+    void searchButton_clicked(ActionEvent event) {
+
+    }
+    @FXML
     void mask_button_clicked(ActionEvent event) {
 
     }
 
-    @FXML
-    void searchButton_clicked(ActionEvent event) {
-
-    }
 
     @FXML
     void updateButton_clicked(ActionEvent event) {
 
     }
 
+
+    @FXML
+    void viewArtistBut_clicked(ActionEvent event) throws IOException {
+        MethodsInit.getInstance().showWindow(loader,
+                artistWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "artistWindow.fxml");
+
+    }
+
+
+    @FXML
+    void viewSongsBut_clicked(ActionEvent event) throws IOException {
+        MethodsInit.getInstance().showWindow(loader,
+                mainWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "mainWindow.fxml");
+    }
+
+
     @FXML
     void viewAlbumBut_clicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void viewArtistBut_clicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void viewColectBut_clicked(ActionEvent event) {
-
-    }
-
-    @FXML
-    void viewSongsBut_clicked(ActionEvent event) {
 
     }
 
@@ -150,4 +196,6 @@ public class AlbumWindow implements Initializable {
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
     }
+
+
 }

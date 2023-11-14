@@ -104,16 +104,23 @@ public class MainWindow implements Initializable {
 
     @FXML
     void addButton_clcked(ActionEvent event) {
+        insert = new MongoOperations(stringConnection, dataBase, collectionName);
+
+
         Document document = new Document("_id",new ObjectId())
                 .append("title", nameField.getText())
                 .append("genre",genreBox.getValue())
                 .append("album", albumBox.getValue())
-                .append("artist", artisteBox.getValue());
-
+                .append("artist", artisteBox.getValue())
+                .append("logic_delete", 0);
 
 
         insert = new MongoOperations(stringConnection, dataBase, collectionName);
         insert.insertDocument(document);
+
+        nameField.clear();
+        genreBox.getItems().clear();
+
 
 
     }
@@ -152,64 +159,29 @@ public class MainWindow implements Initializable {
     // abrir stage Album
     @FXML
     void viewAlbumBut_clicked(ActionEvent event) throws IOException {
-        if(albumWindow == null) {
-            loader = new FXMLLoader(getClass().getResource("albumWindow.fxml"));
-            scene = new Scene(loader.load());
 
-            albumWindow = loader.getController();
-
-            nuevoStage = new Stage();
-            nuevoStage.setScene(scene);
-            MethodsInit.getInstance().setImages(scene); // set buttons images
-            nuevoStage.show();
-            actual = (Stage) exitBut.getScene().getWindow(); // asignar el stage actual
-
-        }else
-            nuevoStage.show();
-
-        nuevoStage.setResizable(false);
-
-        actual.close();
-        int hashCode = albumWindow.hashCode();
-
-        // Imprimir el valor hash
-        System.out.println("nuevoStage direccion: " + hashCode);
+        MethodsInit.getInstance().showWindow(loader,
+                albumWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "albumWindow.fxml");
     }
 
     // abrir stage Artist
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
 
-        if(artistWindow == null){
-            loader = new FXMLLoader(getClass().getResource("artistWindow.fxml"));
-            scene = new Scene(loader.load());
-
-            artistWindow = loader.getController();
-
-            nuevoStage = new Stage();
-            nuevoStage.setScene(scene);
-            methodsInit.getInstance().setImages(scene);// set buttons images
-            nuevoStage.show();
-            actual = (Stage) exitBut.getScene().getWindow(); // asignar el stage actual
-
-        }else
-            nuevoStage.show();
-
-
-        nuevoStage.setResizable(false);
-        actual.close();
-
-
-        int hashCode = artistWindow.hashCode();
-
-        // Imprimir el valor hash
-        System.out.println("nuevoStage direccion: " + hashCode);
+        MethodsInit.getInstance().showWindow(loader,
+                artistWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "artistWindow.fxml");
     }
 
-    @FXML
-    void viewColectBut_clicked(ActionEvent event) {
-
-    }
 
     @FXML
     void viewSongsBut_clicked(ActionEvent event) {
@@ -229,19 +201,10 @@ public class MainWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loader = new FXMLLoader(MainWindow.class.getResource("mainWindow.fxml"));
-        System.out.println(actual);
-
-
         scene = loader.getController();
-        //methodsInit.setImages(scene);
+
         MethodsInit.getInstance().setGenres(genreBox);
-        MethodsInit.getInstance().disable(viewSongsBut);
-
-        int hashCode = loader.hashCode();
-
-        // Imprimir el valor hash
-        System.out.println("nuevoStage direccion: " + hashCode);
-
+        MethodsInit.getInstance().disable(viewSongsBut); // disable viewSongsBut
 
     }
 }

@@ -1,8 +1,14 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class MethodsInit {
     private static MethodsInit instance;
@@ -81,6 +87,39 @@ public class MethodsInit {
         };
         genreBox.getItems().addAll(genres);
 
+    }
+
+    // codigo para acceder a los demas stages
+    public void showWindow(FXMLLoader loader, Object objectClass, Scene scene, Stage nuevoStage, Stage actual, Button node, String fmxl) throws IOException {
+        if(objectClass == null){
+            loader = new FXMLLoader(getClass().getResource(fmxl));
+            scene = new Scene(loader.load());
+
+            objectClass = loader.getController();
+
+            nuevoStage = new Stage();
+            nuevoStage.setScene(scene);
+            setImages(scene);// set buttons images
+            nuevoStage.show();
+            actual = (Stage) node.getScene().getWindow(); // asignar el stage actual
+
+        }else
+            nuevoStage.show();
+
+
+        nuevoStage.setResizable(false);
+        actual.close();
+
+
+        int hashCode = objectClass.hashCode();
+
+        // Imprimir el valor hash
+        System.out.println(fmxl + " direccion: " + hashCode);
+    }
+
+    public void clearNodesSong(TextField title, ChoiceBox<String> genreBox){
+        title.clear();
+        genreBox.getItems().clear();
     }
 
 }

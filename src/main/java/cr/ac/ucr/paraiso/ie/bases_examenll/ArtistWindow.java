@@ -1,6 +1,7 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import data.MongoOperations;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +16,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -84,10 +88,11 @@ public class ArtistWindow implements Initializable {
     private FXMLLoader loader;
     private Scene scene;
     private Stage nuevoStage;
+    private Stage actual;
     private MongoOperations insert;
     private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
-    private String dataBase = "C20937";
-    private String collectionName = "Song";
+    private String dataBase = "luisballar";
+    private String collectionName = "Artist";
     private MainWindow mainWindow;
     private AlbumWindow albumWindow;
 
@@ -96,6 +101,22 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void addButton_clcked(ActionEvent event) {
+        insert = new MongoOperations(stringConnection, dataBase, collectionName);
+
+
+        Document document = new Document("_id",new ObjectId())
+                .append("artist_name", nameField.getText())
+                .append("artist_lastName",lastNameField.getText())
+                .append("nationality", nationalField.getText())
+                .append("gender", genreBox.getValue())
+                .append("logic_delete", 0);
+
+        insert.insertDocument(document);
+
+        nameField.clear();
+        lastNameField.clear();
+        nationalField.clear();
+        genreBox.getItems().clear();
 
     }
 
@@ -106,6 +127,7 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void exitBut_clicked(ActionEvent event) {
+        Platform.exit();
 
     }
 
@@ -135,8 +157,15 @@ public class ArtistWindow implements Initializable {
     }
 
     @FXML
-    void viewAlbumBut_clicked(ActionEvent event) {
+    void viewAlbumBut_clicked(ActionEvent event) throws IOException {
 
+        MethodsInit.getInstance().showWindow(loader,
+                albumWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "albumWindow.fxml");
     }
 
     @FXML
@@ -145,20 +174,22 @@ public class ArtistWindow implements Initializable {
     }
 
     @FXML
-    void viewColectBut_clicked(ActionEvent event) {
+    void viewSongsBut_clicked(ActionEvent event) throws IOException {
 
-    }
-
-    @FXML
-    void viewSongsBut_clicked(ActionEvent event) {
-
+        MethodsInit.getInstance().showWindow(loader,
+                mainWindow,
+                scene,
+                nuevoStage,
+                actual,
+                exitBut,
+                "mainWindow.fxml");
     }
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         MethodsInit.getInstance().setSex(genreBox); // set genres on genreBox
-        MethodsInit.getInstance().disable(viewArtistBut);
+        MethodsInit.getInstance().disable(viewArtistBut); // disable viewArtistBut
 
     }
 }
