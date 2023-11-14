@@ -1,9 +1,7 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
-import data.InsertData;
+import data.MongoOperations;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +18,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
-
-    public MainWindow() {
-    }
 
     @FXML
     private Button addButton;
@@ -87,13 +82,20 @@ public class MainWindow implements Initializable {
     private FXMLLoader loader;
     private Scene scene;
     private Stage nuevoStage;
-    private InsertData insert;
+    private Stage actual;
+
+    private MongoOperations insert;
     private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
     private String dataBase = "C20937";
     private String collectionName = "Song";
     private ArtistWindow artistWindow;
     private AlbumWindow albumWindow;
-    methodsInit methodsInit;
+    private MainWindow mainWindow;
+    MethodsInit methodsInit;
+
+    public MainWindow() {
+    }
+
 
     @FXML
     void filterBox_action(ActionEvent event) {
@@ -110,7 +112,7 @@ public class MainWindow implements Initializable {
 
 
 
-        insert = new InsertData(stringConnection, dataBase, collectionName);
+        insert = new MongoOperations(stringConnection, dataBase, collectionName);
         insert.insertDocument(document);
 
 
@@ -155,17 +157,19 @@ public class MainWindow implements Initializable {
             scene = new Scene(loader.load());
 
             albumWindow = loader.getController();
+
             nuevoStage = new Stage();
             nuevoStage.setScene(scene);
-            methodsInit.setImages(scene); // set buttons images
+            MethodsInit.getInstance().setImages(scene); // set buttons images
             nuevoStage.show();
-
+            actual = (Stage) exitBut.getScene().getWindow(); // asignar el stage actual
 
         }else
             nuevoStage.show();
 
         nuevoStage.setResizable(false);
 
+        actual.close();
         int hashCode = albumWindow.hashCode();
 
         // Imprimir el valor hash
@@ -181,15 +185,21 @@ public class MainWindow implements Initializable {
             scene = new Scene(loader.load());
 
             artistWindow = loader.getController();
-            methodsInit.setImages(scene);// set buttons images
+
             nuevoStage = new Stage();
             nuevoStage.setScene(scene);
+            methodsInit.getInstance().setImages(scene);// set buttons images
             nuevoStage.show();
+            actual = (Stage) exitBut.getScene().getWindow(); // asignar el stage actual
 
         }else
             nuevoStage.show();
 
+
         nuevoStage.setResizable(false);
+        actual.close();
+
+
         int hashCode = artistWindow.hashCode();
 
         // Imprimir el valor hash
@@ -218,13 +228,20 @@ public class MainWindow implements Initializable {
     // inicializar los choiceBox
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         loader = new FXMLLoader(MainWindow.class.getResource("mainWindow.fxml"));
+        System.out.println(actual);
+
 
         scene = loader.getController();
-        methodsInit = new methodsInit();
         //methodsInit.setImages(scene);
-        methodsInit.setGenres(genreBox);
+        MethodsInit.getInstance().setGenres(genreBox);
+        MethodsInit.getInstance().disable(viewSongsBut);
+
+        int hashCode = loader.hashCode();
+
+        // Imprimir el valor hash
+        System.out.println("nuevoStage direccion: " + hashCode);
+
 
     }
 }

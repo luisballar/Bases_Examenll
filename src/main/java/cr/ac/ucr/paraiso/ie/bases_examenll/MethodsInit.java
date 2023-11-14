@@ -1,20 +1,36 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 
-public class methodsInit {
+public class MethodsInit {
+    private static MethodsInit instance;
 
-
+    public static MethodsInit getInstance() {
+        if(instance == null){
+            instance = new MethodsInit();
+        }
+        return instance;
+    }
 
     // set buttons
     public void setImages(Scene actual){
         actual.getStylesheets().add(getClass().getResource("/butStyle.css").toExternalForm());
     }
 
+    // set sexuality on choiceBoxes
+    public void setSex(ChoiceBox<String> genreBox){
+        String[] genres = {"M","F", "Otro"};
+        genreBox.getItems().addAll(genres);
+    }
+
+    public void disable(Button but){
+        but.setDisable(true);
+    }
+
     // set genres on choiceBoxes
     public void setGenres(ChoiceBox<String> genreBox){
-
 
         String[] genres = {
                 "Rock",

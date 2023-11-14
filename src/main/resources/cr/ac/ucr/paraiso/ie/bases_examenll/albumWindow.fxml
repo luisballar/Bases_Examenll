@@ -77,11 +77,6 @@
                                         <Font name="System Bold" size="12.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="viewColectBut" layoutX="19.0" layoutY="129.0" mnemonicParsing="false" onAction="#viewColectBut_clicked" prefHeight="55.0" prefWidth="49.0" style="-fx-background-color: white;" styleClass="boton-stacked" textFill="WHITE">
-                                    <font>
-                                        <Font name="System Bold" size="12.0" />
-                                    </font>
-                                </Button>
                             </children>
                         </AnchorPane>
                     </items>

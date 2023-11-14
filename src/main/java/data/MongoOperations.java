@@ -8,13 +8,13 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
-public class InsertData {
+public class MongoOperations {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Document> collection;
 
 
-    public InsertData(String connectionString, String databaseName, String colectionName){
+    public MongoOperations(String connectionString, String databaseName, String colectionName){
 
         // configura la conexión a tu clúster de MongoDB Atlas
         this.mongoClient = MongoClients.create(MongoClientSettings.builder().applyConnectionString(new ConnectionString(connectionString)).build());

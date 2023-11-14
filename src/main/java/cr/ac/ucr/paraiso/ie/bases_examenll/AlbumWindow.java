@@ -2,6 +2,7 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -11,7 +12,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
-public class AlbumWindow {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class AlbumWindow implements Initializable {
 
     @FXML
     private Button addButton;
@@ -32,7 +36,7 @@ public class AlbumWindow {
     private TableColumn<?, ?> genreColumn;
 
     @FXML
-    private ChoiceBox<?> genreField;
+    private ChoiceBox<String> albumBox;
 
     @FXML
     private TableColumn<?, ?> idColumn;
@@ -78,6 +82,8 @@ public class AlbumWindow {
 
     @FXML
     private TextField yearField;
+
+
 
     @FXML
     void addButton_clcked(ActionEvent event) {
@@ -139,4 +145,9 @@ public class AlbumWindow {
 
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
+        MethodsInit.getInstance().disable(viewAlbumBut);
+    }
 }

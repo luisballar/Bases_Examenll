@@ -1,13 +1,12 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
-import data.InsertData;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.bson.Document;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 public class HelloApplication extends Application {
     @Override
@@ -16,8 +15,7 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Disquera");
         stage.setScene(scene);
-        MainWindow mainWindow = fxmlLoader.getController();
-        //mainWindow.setImages(scene);
+        MethodsInit.getInstance().setImages(scene); // set images on buttons
         stage.setResizable(false);
         stage.show();
 
@@ -27,5 +25,6 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
         launch();
+
     }
 }

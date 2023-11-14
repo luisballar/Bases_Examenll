@@ -1,7 +1,10 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import data.MongoOperations;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -11,8 +14,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
-public class ArtistWindow {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ArtistWindow implements Initializable {
 
     @FXML
     private Button addButton;
@@ -33,7 +40,7 @@ public class ArtistWindow {
     private ComboBox<?> filterBox;
 
     @FXML
-    private ChoiceBox<?> genreBox;
+    private ChoiceBox<String> genreBox;
 
     @FXML
     private TextField lastNameField;
@@ -73,6 +80,19 @@ public class ArtistWindow {
 
     @FXML
     private Button viewSongsBut;
+
+    private FXMLLoader loader;
+    private Scene scene;
+    private Stage nuevoStage;
+    private MongoOperations insert;
+    private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
+    private String dataBase = "C20937";
+    private String collectionName = "Song";
+    private MainWindow mainWindow;
+    private AlbumWindow albumWindow;
+
+    public ArtistWindow() {
+    }
 
     @FXML
     void addButton_clcked(ActionEvent event) {
@@ -134,8 +154,11 @@ public class ArtistWindow {
 
     }
 
-    public void setImages(Scene actual){
-        actual.getStylesheets().add(getClass().getResource("/butStyle.css").toExternalForm());
-    }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        MethodsInit.getInstance().setSex(genreBox); // set genres on genreBox
+        MethodsInit.getInstance().disable(viewArtistBut);
+
+    }
 }
