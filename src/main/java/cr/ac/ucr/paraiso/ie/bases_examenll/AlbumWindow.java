@@ -133,7 +133,7 @@ public class AlbumWindow implements Initializable {
     void deleteButton_clicked(ActionEvent event) {
 
         //valida si se trata de borrado logico o fisico
-        if(logicDelete.isSelected()){
+        if(logicDelete.isSelected() && op.exists(searchField.getText()) == true){
             op.logicDelete(searchField.getText());
         }else{
             long number = op.countDocuments();

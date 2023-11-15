@@ -41,7 +41,7 @@ public class MongoOperations {
         // Realiza la inserción
         collection.insertOne(document);
         System.out.println("Agregado Correctamente");
-        mongoClient.close();
+        //mongoClient.close();
     }
 
     // delete docs
@@ -75,16 +75,21 @@ public class MongoOperations {
 
     public void logicDelete(String docID){
 
-        // Filtrar el documento que deseas actualizar
-        Document filter = new Document("_id", docID);
+        if(session.hasActiveTransaction() == true){
+            // Filtrar el documento que deseas actualizar
 
-        // Definir la actualización que deseas realizar
-        Document update = new Document("$set", new Document("logic_delete", 1));
+            Document filter = new Document("_id", docID);
 
-        // Ejecutar la actualización
-        collection.updateOne(filter, update);
+            // Definir la actualización que deseas realizar
+            Document update = new Document("$set", new Document("logic_delete", 1));
 
-        System.out.println("Se borro logicamente");
+            // Ejecutar la actualización
+            collection.updateOne(filter, update);
+
+            System.out.println("Se borro logicamente");
+        }else
+            System.out.println("Error de Sesión");
+
     }
 
 
@@ -103,6 +108,17 @@ public class MongoOperations {
             asignado = countDocuments() + 1;
         
         return Long.toString(asignado);
+    }
+
+    public boolean exists(String idDoc) {
+        try {
+            Document document = collection.find(new Document("_id", idDoc)).first();
+            return document != null;
+        } catch (IllegalArgumentException e) {
+            // El idDoc no es un ObjectId válido
+            System.out.println("ID inválido");
+            return false;
+        }
     }
 
 }
