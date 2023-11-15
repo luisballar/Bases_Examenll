@@ -3,13 +3,18 @@ package data;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
+import com.mongodb.client.result.DeleteResult;
+import domain.Album;
 import domain.Song;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableView;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MongoOperations {
     private MongoClient mongoClient;
@@ -35,56 +40,35 @@ public class MongoOperations {
         mongoClient.close();
     }
 
-    public void viewData(String dataBase, String collectionName) {
+    // delete docs
+    public void deleteDocuments(String idField, int value) {
+        // crear un filtro para especificar los documentos que deseas borrar
+        Document filter = new Document(idField, value);
 
-            MongoDatabase database = mongoClient.getDatabase(dataBase);
-            MongoCollection<Document> collection = database.getCollection(collectionName);
+        // borrar múltiples documentos que coinciden con el filtro
+        DeleteResult deleteResult = collection.deleteOne(filter);
 
-            // Realizar consulta
-            FindIterable<Document> documents = collection.find();
-
-
-            // Poblar TableView con datos de MongoDB
-            populateTableView(documents);
-
-            // Mostrar ventana
-            primaryStage.setScene(new Scene(tableView, 600, 400));
-            primaryStage.setTitle("MongoDB TableView Example");
-            primaryStage.show();
-
-
+        // imprimir la cantidad de documentos eliminados
+        System.out.println("Documentos eliminados: " + deleteResult.getDeletedCount());
     }
 
-    // poblate data in tableView
-    private void populateTableView(FindIterable<Document> documents, TableView tableView) {
-        // Poblar TableView con datos de MongoDB
-        MongoCursor<Document> cursor = documents.iterator();
-        while (cursor.hasNext()) {
-            Document document = cursor.next();
-            String id = document.getString("_id");
-            String title = document.getString("columna1");
-            String artist = document.getString("columna2");
-            String genre = document.getString("columna3");
-            String album = document.getString("columna4");
-            String year = document.getString("columna5");
-            tableView.getItems().add(new Song(id, ));
-        }
+    public long countDocuments() {
+        // Contar documentos en la colección
+        return collection.countDocuments();
     }
 
-
-    public void insertSong(String nameField, String genreBox, String albumBox, String artisteBox){
-
-        Document document = new Document("_id",new ObjectId())
-                .append("title", nameField)
-                .append("genre",genreBox)
-                .append("album", albumBox)
-                .append("artist", artisteBox)
-                .append("logic_delete", 0);
-
-        collection.insertOne(document);
-        System.out.println("Agregado Correctamente");
-        mongoClient.close(); // close connection
-
+    public long asignaID(){
+        long asignado = 0;
+        if(countDocuments() == 0)
+            return 1;
+        else if(countDocuments() > 0)
+            asignado = countDocuments() + 1;
+        
+        return asignado;
     }
+    
+
+
 
 }
+

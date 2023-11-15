@@ -83,11 +83,11 @@ public class MainWindow implements Initializable {
     private Scene scene;
     private Stage nuevoStage;
     private Stage actual;
-
-    private MongoOperations insert;
     private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
-    private String dataBase = "C20937";
+    private String dataBase = "luisballar";
     private String collectionName = "Song";
+    private MongoOperations  op = new MongoOperations(stringConnection, dataBase, collectionName);
+
     private ArtistWindow artistWindow;
     private AlbumWindow albumWindow;
     private MainWindow mainWindow;
@@ -104,10 +104,9 @@ public class MainWindow implements Initializable {
 
     @FXML
     void addButton_clcked(ActionEvent event) {
-        insert = new MongoOperations(stringConnection, dataBase, collectionName);
 
 
-        Document document = new Document("_id",new ObjectId())
+        Document document = new Document("_id",op.asignaID())
                 .append("title", nameField.getText())
                 .append("genre",genreBox.getValue())
                 .append("album", albumBox.getValue())
@@ -115,8 +114,7 @@ public class MainWindow implements Initializable {
                 .append("logic_delete", 0);
 
 
-        insert = new MongoOperations(stringConnection, dataBase, collectionName);
-        insert.insertDocument(document);
+        op.insertDocument(document);
 
         nameField.clear();
         genreBox.getItems().clear();

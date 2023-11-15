@@ -1,7 +1,12 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import com.mongodb.client.*;
 import data.MongoOperations;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +19,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.bson.Document;
@@ -21,6 +27,8 @@ import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AlbumWindow implements Initializable {
@@ -47,7 +55,7 @@ public class AlbumWindow implements Initializable {
     private ChoiceBox<String> albumBox;
 
     @FXML
-    private TableColumn<?, ?> idColumn;
+    private TableColumn<Document, String> idColumn;
 
     @FXML
     private CheckBox logicDelete;
@@ -68,7 +76,7 @@ public class AlbumWindow implements Initializable {
     private TextField searchField;
 
     @FXML
-    private TableView<?> tableView;
+    private TableView<Document>tableView;
 
     @FXML
     private Button updateButton;
@@ -96,10 +104,10 @@ public class AlbumWindow implements Initializable {
     private Scene scene;
     private Stage nuevoStage;
     private Stage actual;
-    private MongoOperations insert;
     private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
     private String dataBase = "luisballar";
     private String collectionName = "Album";
+    private MongoOperations op = new MongoOperations(stringConnection, dataBase, collectionName);;
     private MainWindow mainWindow;
     private ArtistWindow artistWindow;
 
@@ -107,17 +115,14 @@ public class AlbumWindow implements Initializable {
     // insert data
     @FXML
     void addButton_clcked(ActionEvent event) {
-        insert = new MongoOperations(stringConnection, dataBase, collectionName);
 
-        Document document = new Document("_id",new ObjectId())
+        Document document = new Document("_id", op.asignaID())
                 .append("title", nameField.getText())
-                .append("gender", albumBox.getValue())
+                .append("genre", albumBox.getValue())
                 .append("year_release", yearField.getText())
                 .append("logic_delete", 0);
-        ;
 
-
-        insert.insertDocument(document);
+        op.insertDocument(document);
 
         nameField.clear();
         albumBox.getItems().clear();
@@ -126,7 +131,9 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void deleteButton_clicked(ActionEvent event) {
-
+        long number = op.countDocuments();
+        System.out.println(number);
+        op.deleteDocuments("_id", 1);
     }
 
     @FXML
@@ -151,6 +158,7 @@ public class AlbumWindow implements Initializable {
     }
     @FXML
     void mask_button_clicked(ActionEvent event) {
+
 
     }
 

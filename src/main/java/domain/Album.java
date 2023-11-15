@@ -1,7 +1,7 @@
 package domain;
 
 public class Album {
-    private int albumID;
+    private String albumID;
     private String name;
     private String genre;
     private String year;
@@ -9,18 +9,18 @@ public class Album {
     public Album() {
     }
 
-    public Album(int albumID, String name, String genre, String year) {
+    public Album(String albumID, String name, String genre, String year) {
         this.albumID = albumID;
         this.name = name;
         this.genre = genre;
         this.year = year;
     }
 
-    public int getAlbumID() {
+    public String getAlbumID() {
         return albumID;
     }
 
-    public void setAlbumID(int albumID) {
+    public void setAlbumID(String albumID) {
         this.albumID = albumID;
     }
 
@@ -51,7 +51,7 @@ public class Album {
     @Override
     public String toString() {
         return "Album{" +
-                "albumID=" + albumID +
+                "albumID='" + albumID + '\'' +
                 ", name='" + name + '\'' +
                 ", genre='" + genre + '\'' +
                 ", year='" + year + '\'' +
