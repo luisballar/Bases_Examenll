@@ -120,7 +120,7 @@ public class AlbumWindow implements Initializable {
                 .append("title", nameField.getText())
                 .append("genre", albumBox.getValue())
                 .append("year_release", yearField.getText())
-                .append("logic_delete", 0);
+                .append("logic_delete", "0");
 
         op.insertDocument(document);
 
@@ -131,11 +131,19 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void deleteButton_clicked(ActionEvent event) {
-        long number = op.countDocuments();
-        System.out.println(number);
-        op.deleteDocuments("_id", 1);
+
+        //valida si se trata de borrado logico o fisico
+        if(logicDelete.isSelected()){
+            op.logicDelete(searchField.getText());
+        }else{
+            long number = op.countDocuments();
+            System.out.println(number);
+            op.deleteDocuments("_id", searchField.getText());
+        }
+
     }
 
+    // close all
     @FXML
     void exitBut_clicked(ActionEvent event) {
         Platform.exit();
@@ -149,7 +157,6 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void logicDelete_clicked(ActionEvent event) {
-
     }
 
     @FXML
@@ -158,7 +165,7 @@ public class AlbumWindow implements Initializable {
     }
     @FXML
     void mask_button_clicked(ActionEvent event) {
-
+        op.imprimir();
 
     }
 
@@ -203,6 +210,7 @@ public class AlbumWindow implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
+        MethodsInit.getInstance().setFiltersAlbum(filterBox);
     }
 
 

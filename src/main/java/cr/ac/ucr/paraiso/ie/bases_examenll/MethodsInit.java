@@ -2,10 +2,7 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -117,9 +114,16 @@ public class MethodsInit {
         System.out.println(fmxl + " direccion: " + hashCode);
     }
 
-    public void clearNodesSong(TextField title, ChoiceBox<String> genreBox){
-        title.clear();
-        genreBox.getItems().clear();
+    public void setFiltersAlbum(ComboBox filter){
+        String[] filters = {
+                "ID",
+                "Nombre",
+                "Genero",
+                "Año"
+        };
+
+        filter.getItems().addAll(filters);
+
     }
 
 }
