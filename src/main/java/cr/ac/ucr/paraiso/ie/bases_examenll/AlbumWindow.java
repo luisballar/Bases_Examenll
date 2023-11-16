@@ -248,5 +248,4 @@ public class AlbumWindow implements Initializable {
 
     }
 
-
 }
