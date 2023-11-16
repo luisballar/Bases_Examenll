@@ -70,6 +70,9 @@ public class Album {
         this.genre.set(genre);
     }
 
+    public String getYear() {
+        return year.get();
+    }
 
     // return enmascaramiento
     public SimpleStringProperty getYear(Document doc) {

@@ -28,12 +28,12 @@
             </font></Button>
         <TextField fx:id="nameField" layoutX="210.0" layoutY="74.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
         <TextField fx:id="yearField" layoutX="208.0" layoutY="167.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
-        <TableView fx:id="tableView" layoutX="434.0" layoutY="139.0" prefHeight="383.0" prefWidth="686.0">
+        <TableView fx:id="tableView" layoutX="434.0" layoutY="139.0" onMouseClicked="#MouseClicked" prefHeight="383.0" prefWidth="686.0">
             <columns>
                 <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
                 <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                 <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
-                <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Nationality" />
+                <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Year" />
             </columns>
         </TableView>
         <Label alignment="CENTER" layoutX="127.0" layoutY="78.0" prefHeight="16.0" prefWidth="75.0" text="Nombre" textFill="WHITE" />

@@ -13,14 +13,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.bson.Document;
@@ -78,7 +73,7 @@ public class AlbumWindow implements Initializable {
     private TextField searchField;
 
     @FXML
-    private TableView<Document>tableView;
+    private TableView<Album>tableView;
 
     @FXML
     private Button updateButton;
@@ -110,10 +105,7 @@ public class AlbumWindow implements Initializable {
     private MongoOperations op = new MongoOperations(collectionName);
     private MainWindow mainWindow;
     private ArtistWindow artistWindow;
-
-
-
-
+    private Alert alertMessage;
 
     // insert data
     @FXML
@@ -145,8 +137,11 @@ public class AlbumWindow implements Initializable {
                 op.deleteDocuments("_id", searchField.getText());
             }
         }else
-            System.out.println("No existe el ID");
-
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Eliminar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("No se encontró es ID solicitado");
+            alertMessage.show();
     }
 
     // close all
@@ -156,9 +151,10 @@ public class AlbumWindow implements Initializable {
 
     }
 
+    // ver que tiene seleccionado el filtro
     @FXML
-    void filterBox_action(ActionEvent event) {
-
+    public String filterBox_action(ActionEvent event) {
+        return (String) filterBox.getValue();
     }
 
     @FXML
@@ -167,6 +163,63 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void searchButton_clicked(ActionEvent event) {
+        String option = filterBox_action(event);
+        System.out.println(option);
+        switch(option){
+            case "ID":
+                if(op.exists(searchField.getText()) == true){
+                    System.out.println("si existe"); // valida si existe el id
+                    break;
+                }else{
+                    alertMessage = new Alert(Alert.AlertType.ERROR);
+                    alertMessage.setTitle("Error de Búsqueda");
+                    alertMessage.setHeaderText(null);
+                    alertMessage.setContentText("No se encontró el ID solicitado");
+                    alertMessage.show();
+                    break;
+                }
+            case "Nombre":
+                if(op.existsForTitle(searchField.getText()) == true){
+                    System.out.println("si existe"); // valida si existe el nombre
+                    break;
+                }else{
+                    alertMessage = new Alert(Alert.AlertType.ERROR);
+                    alertMessage.setTitle("Error de Búsqueda");
+                    alertMessage.setHeaderText(null);
+                    alertMessage.setContentText("No se encontró el Nombre solicitado");
+                    alertMessage.show();
+                    break;
+                }
+            case "Genero":
+                if(op.existsForGenre(searchField.getText()) == true){
+                    System.out.println("si existe"); // valida si existe el genero
+                    break;
+                }else{
+                    alertMessage = new Alert(Alert.AlertType.ERROR);
+                    alertMessage.setTitle("Error de Búsqueda");
+                    alertMessage.setHeaderText(null);
+                    alertMessage.setContentText("No se encontró el Genero solicitado");
+                    alertMessage.show();
+                    break;
+                }
+
+            case "Año":
+                if(op.existsForYear(searchField.getText()) == true){
+                    System.out.println("si existe"); // valida si existe el id
+                    break;
+                }else{
+                    alertMessage = new Alert(Alert.AlertType.ERROR);
+                    alertMessage.setTitle("Error de Búsqueda");
+                    alertMessage.setHeaderText(null);
+                    alertMessage.setContentText("No se encontró el Año solicitado");
+                    alertMessage.show();
+                    break;
+                }
+
+
+        }
+
+
 
     }
     @FXML
@@ -176,11 +229,7 @@ public class AlbumWindow implements Initializable {
             mask_button.setText("Desenmascarar");
 
             op.maskMethod(tableView); // metodo que enmascara el year
-
-            idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
-            nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
-            genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
-            yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
+            configureTableMask(idColumn, nameColumn, genreColumn, yearColumn);
 
         }else if(mask_button.getText().equals("Desenmascarar")){
             mask_button.setText("Enmascarar");
@@ -189,14 +238,29 @@ public class AlbumWindow implements Initializable {
 
         }
 
-
     }
 
+
+
+    // saber que fila esta siendo clicked
+    @FXML
+    void MouseClicked(MouseEvent event) {
+
+        Album selectedAlbum = tableView.getSelectionModel().getSelectedItem();
+
+        System.out.println(selectedAlbum.genreProperty());
+        nameField.setText(selectedAlbum.getName());
+        yearField.setText(selectedAlbum.getYear());
+
+    }
 
     @FXML
     void updateButton_clicked(ActionEvent event) {
 
+
     }
+
+
 
 
     @FXML
@@ -228,16 +292,6 @@ public class AlbumWindow implements Initializable {
     void viewAlbumBut_clicked(ActionEvent event) {
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
-        MethodsInit.getInstance().disable(viewAlbumBut);
-        MethodsInit.getInstance().setFiltersAlbum(filterBox);
-
-
-        op.fetchAndDisplayData(tableView);
-        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
-    }
 
     // configure tableview
     private void configureTable(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
@@ -248,4 +302,24 @@ public class AlbumWindow implements Initializable {
 
     }
 
+    // enmascara el tableView
+    private void configureTableMask(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
+        nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
+        genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
+        yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
+
+    }
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
+        MethodsInit.getInstance().disable(viewAlbumBut);
+        MethodsInit.getInstance().setFiltersAlbum(filterBox);
+
+
+        //op.fetchAndDisplayData(tableView);
+        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+    }
 }

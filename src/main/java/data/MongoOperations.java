@@ -137,14 +137,42 @@ public class MongoOperations {
         return Long.toString(asignado);
     }
 
-    // verifica si existe
+    // verifica si existe por ID
     public boolean exists(String idDoc) {
         try {
             Document document = collection.find(new Document("_id", idDoc)).first();
             return document != null;
         } catch (IllegalArgumentException e) {
-            // El idDoc no es un ObjectId válido
-            System.out.println("ID inválido");
+            return false;
+        }
+    }
+
+    // verifica si existe por titulo
+    public boolean existsForTitle(String nameDoc) {
+        try {
+            Document document = collection.find(new Document("title", nameDoc)).first();
+            return document != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // verifica si existe por genero
+    public boolean existsForGenre(String idDoc) {
+        try {
+            Document document = collection.find(new Document("genre", idDoc)).first();
+            return document != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // verifica si existe por year
+    public boolean existsForYear(String idDoc) {
+        try {
+            Document document = collection.find(new Document("year_realase", idDoc)).first();
+            return document != null;
+        } catch (IllegalArgumentException e) {
             return false;
         }
     }
