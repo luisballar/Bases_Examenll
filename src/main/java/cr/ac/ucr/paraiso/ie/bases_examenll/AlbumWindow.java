@@ -2,6 +2,7 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 
 import com.mongodb.client.*;
 import data.MongoOperations;
+import domain.Album;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -28,6 +29,7 @@ import org.bson.types.ObjectId;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -49,13 +51,13 @@ public class AlbumWindow implements Initializable {
     private ComboBox<?> filterBox;
 
     @FXML
-    private TableColumn<?, ?> genreColumn;
+    private TableColumn<Album, String> genreColumn;
 
     @FXML
     private ChoiceBox<String> albumBox;
 
     @FXML
-    private TableColumn<Document, String> idColumn;
+    private TableColumn<Album, String> idColumn;
 
     @FXML
     private CheckBox logicDelete;
@@ -64,7 +66,7 @@ public class AlbumWindow implements Initializable {
     private Button mask_button;
 
     @FXML
-    private TableColumn<?, ?> nameColumn;
+    private TableColumn<Album, String> nameColumn;
 
     @FXML
     private TextField nameField;
@@ -95,7 +97,7 @@ public class AlbumWindow implements Initializable {
     private Button viewSongsBut;
 
     @FXML
-    private TableColumn<?, ?> yearColumn;
+    private TableColumn<Album, String> yearColumn;
 
     @FXML
     private TextField yearField;
@@ -104,12 +106,13 @@ public class AlbumWindow implements Initializable {
     private Scene scene;
     private Stage nuevoStage;
     private Stage actual;
-    private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
-    private String dataBase = "luisballar";
     private String collectionName = "Album";
-    private MongoOperations op = new MongoOperations(stringConnection, dataBase, collectionName);;
+    private MongoOperations op = new MongoOperations(collectionName);
     private MainWindow mainWindow;
     private ArtistWindow artistWindow;
+
+
+
 
 
     // insert data
@@ -125,21 +128,24 @@ public class AlbumWindow implements Initializable {
         op.insertDocument(document);
 
         nameField.clear();
-        albumBox.getItems().clear();
+        //albumBox.getItems().clear();
         yearField.clear();
     }
 
     @FXML
     void deleteButton_clicked(ActionEvent event) {
 
-        //valida si se trata de borrado logico o fisico
-        if(logicDelete.isSelected() && op.exists(searchField.getText()) == true){
-            op.logicDelete(searchField.getText());
-        }else{
-            long number = op.countDocuments();
-            System.out.println(number);
-            op.deleteDocuments("_id", searchField.getText());
-        }
+        if(op.exists(searchField.getText()) == true) {
+            //valida si se trata de borrado logico o fisico
+            if (logicDelete.isSelected()) {
+                op.logicDelete(searchField.getText());
+            } else {
+                long number = op.countDocuments();
+                System.out.println(number);
+                op.deleteDocuments("_id", searchField.getText());
+            }
+        }else
+            System.out.println("No existe el ID");
 
     }
 
@@ -166,6 +172,8 @@ public class AlbumWindow implements Initializable {
     @FXML
     void mask_button_clicked(ActionEvent event) {
         op.imprimir();
+        op.fetchAndDisplayData(tableView);
+        op.configureTable(idColumn, nameColumn, genreColumn, yearColumn);
 
     }
 
@@ -211,6 +219,10 @@ public class AlbumWindow implements Initializable {
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
         MethodsInit.getInstance().setFiltersAlbum(filterBox);
+
+
+
+
     }
 
 

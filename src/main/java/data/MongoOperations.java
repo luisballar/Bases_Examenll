@@ -7,34 +7,53 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import domain.Album;
 import domain.Song;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class MongoOperations {
     private MongoClient mongoClient;
     private MongoDatabase database;
     private MongoCollection<Document> collection;
     private ClientSession session;
+    private String stringConn = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
+    private String db = "luisballar";
 
-    public MongoOperations(String connectionString, String databaseName, String colectionName) {
+    String title, genre, year;
+
+
+    public MongoOperations(String colectionName) {
 
         // configura la conexión a tu clúster de MongoDB Atlas
-        this.mongoClient = MongoClients.create(MongoClientSettings.builder().applyConnectionString(new ConnectionString(connectionString)).build());
+        this.mongoClient = MongoClients.create(MongoClientSettings.builder().applyConnectionString(new ConnectionString(this.stringConn)).build());
 
         // selecciona la db y coleccion en la que trabajar
-        this.database = mongoClient.getDatabase(databaseName);
+        this.database = mongoClient.getDatabase(this.db);
         this.collection = database.getCollection(colectionName);
         session = mongoClient.startSession();
         session.startTransaction();
 
+    }
+
+    public void fetchAndDisplayData(TableView tableView) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Album(document));
+        }
+
+        tableView.setItems(data);
+    }
+
+    public void configureTable(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
     }
 
     public void insertDocument(Document document) {
@@ -58,19 +77,19 @@ public class MongoOperations {
 
     // show consults
     public void imprimir(){
-
+        Document document = null;
         if(session.hasActiveTransaction() == true ){
             FindIterable<Document> findIterable = collection.find();
             Iterator<Document> iterator = findIterable.iterator();
             while(iterator.hasNext()){
-                Document document = iterator.next();
+                document = iterator.next();
                 System.out.println(document);
-                System.out.println(document.get("title"));
                 //session.close();
             }
         }else
             System.out.println("Error de Sesión");
 
+        System.out.println(document);
     }
 
     public void logicDelete(String docID){
@@ -110,6 +129,7 @@ public class MongoOperations {
         return Long.toString(asignado);
     }
 
+    // verifica si existe
     public boolean exists(String idDoc) {
         try {
             Document document = collection.find(new Document("_id", idDoc)).first();

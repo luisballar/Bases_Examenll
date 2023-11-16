@@ -1,15 +1,22 @@
 package domain;
 
-public class Album {
-    private String albumID;
-    private String name;
-    private String genre;
-    private String year;
+import javafx.beans.property.SimpleStringProperty;
+import org.bson.Document;
 
-    public Album() {
+public class Album {
+    private SimpleStringProperty albumID;
+    private SimpleStringProperty name;
+    private SimpleStringProperty genre;
+    private SimpleStringProperty year;
+
+    public Album(Document document) {
+        this.albumID = new SimpleStringProperty(document.getString("_id"));
+        this.name = new SimpleStringProperty(document.getString("title"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
+        this.year = new SimpleStringProperty(document.getString("year_release"));
     }
 
-    public Album(String albumID, String name, String genre, String year) {
+    public Album(SimpleStringProperty albumID, SimpleStringProperty name, SimpleStringProperty genre, SimpleStringProperty year) {
         this.albumID = albumID;
         this.name = name;
         this.genre = genre;
@@ -17,44 +24,60 @@ public class Album {
     }
 
     public String getAlbumID() {
+        return albumID.get();
+    }
+
+    public SimpleStringProperty albumIDProperty() {
         return albumID;
     }
 
     public void setAlbumID(String albumID) {
-        this.albumID = albumID;
+        this.albumID.set(albumID);
     }
 
     public String getName() {
+        return name.get();
+    }
+
+    public SimpleStringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public String getGenre() {
+        return genre.get();
+    }
+
+    public SimpleStringProperty genreProperty() {
         return genre;
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre.set(genre);
     }
 
     public String getYear() {
+        return year.get();
+    }
+
+    public SimpleStringProperty yearProperty() {
         return year;
     }
 
     public void setYear(String year) {
-        this.year = year;
+        this.year.set(year);
     }
 
     @Override
     public String toString() {
         return "Album{" +
-                "albumID='" + albumID + '\'' +
-                ", name='" + name + '\'' +
-                ", genre='" + genre + '\'' +
-                ", year='" + year + '\'' +
+                "albumID=" + albumID +
+                ", name=" + name +
+                ", genre=" + genre +
+                ", year=" + year +
                 '}';
     }
 }

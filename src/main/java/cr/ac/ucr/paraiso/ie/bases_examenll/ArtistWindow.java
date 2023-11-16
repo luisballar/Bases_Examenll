@@ -90,8 +90,7 @@ public class ArtistWindow implements Initializable {
     private Stage nuevoStage;
     private Stage actual;
     private MongoOperations insert;
-    private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
-    private String dataBase = "luisballar";
+
     private String collectionName = "Artist";
     private MainWindow mainWindow;
     private AlbumWindow albumWindow;
@@ -101,7 +100,7 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void addButton_clcked(ActionEvent event) {
-        insert = new MongoOperations(stringConnection, dataBase, collectionName);
+        insert = new MongoOperations(collectionName);
 
 
         Document document = new Document("_id",new ObjectId())

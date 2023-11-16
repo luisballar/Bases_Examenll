@@ -83,10 +83,8 @@ public class MainWindow implements Initializable {
     private Scene scene;
     private Stage nuevoStage;
     private Stage actual;
-    private String stringConnection = "mongodb+srv://luisballar:C20937@if4100.kles8ol.mongodb.net/?retryWrites=true&w=majority";
-    private String dataBase = "luisballar";
     private String collectionName = "Song";
-    private MongoOperations  op = new MongoOperations(stringConnection, dataBase, collectionName);
+    private MongoOperations  op = new MongoOperations(collectionName);
 
     private ArtistWindow artistWindow;
     private AlbumWindow albumWindow;
