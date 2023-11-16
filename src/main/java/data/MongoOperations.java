@@ -41,6 +41,8 @@ public class MongoOperations {
 
     }
 
+
+    // consulta para mostrar en el tableView
     public void fetchAndDisplayData(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
         ObservableList<Album> data = FXCollections.observableArrayList();
@@ -52,8 +54,16 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
-    public void configureTable(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
-        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
+
+    public void maskMethod(TableView tableView) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Album(document, ""));
+        }
+
+        tableView.setItems(data);
     }
 
     public void insertDocument(Document document) {
@@ -88,8 +98,6 @@ public class MongoOperations {
             }
         }else
             System.out.println("Error de Sesión");
-
-        System.out.println(document);
     }
 
     public void logicDelete(String docID){

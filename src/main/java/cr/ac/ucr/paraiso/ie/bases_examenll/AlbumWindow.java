@@ -171,9 +171,24 @@ public class AlbumWindow implements Initializable {
     }
     @FXML
     void mask_button_clicked(ActionEvent event) {
-        op.imprimir();
-        op.fetchAndDisplayData(tableView);
-        op.configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+
+        if(mask_button.getText().equals("Enmascarar")){
+            mask_button.setText("Desenmascarar");
+
+            op.maskMethod(tableView); // metodo que enmascara el year
+
+            idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
+            nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
+            genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
+            yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
+
+        }else if(mask_button.getText().equals("Desenmascarar")){
+            mask_button.setText("Enmascarar");
+            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+
+        }
+
 
     }
 
@@ -211,7 +226,6 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void viewAlbumBut_clicked(ActionEvent event) {
-
     }
 
     @Override
@@ -221,7 +235,16 @@ public class AlbumWindow implements Initializable {
         MethodsInit.getInstance().setFiltersAlbum(filterBox);
 
 
+        op.fetchAndDisplayData(tableView);
+        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+    }
 
+    // configure tableview
+    private void configureTable(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
+        title.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
+        genre.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
+        year.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
 
     }
 

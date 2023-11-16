@@ -3,6 +3,8 @@ package domain;
 import javafx.beans.property.SimpleStringProperty;
 import org.bson.Document;
 
+import java.util.Arrays;
+
 public class Album {
     private SimpleStringProperty albumID;
     private SimpleStringProperty name;
@@ -15,6 +17,15 @@ public class Album {
         this.genre = new SimpleStringProperty(document.getString("genre"));
         this.year = new SimpleStringProperty(document.getString("year_release"));
     }
+
+    public Album(Document document, String text) {
+        this.albumID = new SimpleStringProperty(document.getString("_id"));
+        this.name = new SimpleStringProperty(document.getString("title"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
+        this.year = getYear(document);
+    }
+
+
 
     public Album(SimpleStringProperty albumID, SimpleStringProperty name, SimpleStringProperty genre, SimpleStringProperty year) {
         this.albumID = albumID;
@@ -59,8 +70,12 @@ public class Album {
         this.genre.set(genre);
     }
 
-    public String getYear() {
-        return year.get();
+
+    // return enmascaramiento
+    public SimpleStringProperty getYear(Document doc) {
+        char[] enmask = new char[new String(doc.getString("year_release")).length()];
+        Arrays.fill(enmask, '*');
+        return new SimpleStringProperty(String.valueOf(enmask));
     }
 
     public SimpleStringProperty yearProperty() {
