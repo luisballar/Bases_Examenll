@@ -127,6 +127,8 @@ public class AlbumWindow implements Initializable {
             nameField.clear();
             op.fetchAndDisplayData(tableView); // carga el tableView con los datos
             configureTable();
+            albumBox.setValue(null);
+            yearChoiceBox.setValue(null);
 
 
         }else{
@@ -383,14 +385,13 @@ public class AlbumWindow implements Initializable {
 
     }
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setYears();// set years on genreBox
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
 
+        nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
         //op.fetchAndDisplayData(tableView);
 

@@ -339,7 +339,6 @@ public class ArtistWindow implements Initializable {
 
 
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         MethodsInit.getInstance().setGenres(genreBox); // set genres on genreBox
@@ -347,6 +346,10 @@ public class ArtistWindow implements Initializable {
         setNationality(); // set nationalities on genreBox
         setFiltersAlbum(); // set filters on filterBox
 
+        nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
+
+        op.fetchAndDisplayDataArtist(tableView);
+        configureTable();
     }
 }

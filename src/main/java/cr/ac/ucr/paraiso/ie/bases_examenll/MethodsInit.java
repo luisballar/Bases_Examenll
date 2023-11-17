@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.function.UnaryOperator;
 
 public class MethodsInit {
     private static MethodsInit instance;
@@ -86,6 +87,20 @@ public class MethodsInit {
 
     }
 
+
+    // validar que no entren solo blank spaces
+    public UnaryOperator<TextFormatter.Change> validateBlankSpaces() {
+        return change -> {
+            String newText = change.getControlNewText();
+
+            // Permitir el cambio si la nueva cadena es vacía o no contiene solo espacios en blanco
+            if (newText.isEmpty() || !newText.trim().isEmpty()) {
+                return change;
+            }
+
+            return null; // No permitir cambios (solo espacios en blanco)
+        };
+    }
 
 
     // codigo para acceder a los demas stages

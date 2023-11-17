@@ -14,7 +14,7 @@ public class Artist {
 
     public Artist(Document document){
         this.artistID = new SimpleStringProperty(document.getString("_id"));
-        this.name = new SimpleStringProperty(document.getString("artist_name"));
+        this.name = new SimpleStringProperty(document.getString("name"));
         this.nationality = new SimpleStringProperty(document.getString("nationality"));
         this.genre = new SimpleStringProperty(document.getString("gender"));
     }

@@ -67,6 +67,7 @@ public class MongoOperations {
         }
 
         tableView.setItems(data);
+        System.out.println(data);
     }
 
 
