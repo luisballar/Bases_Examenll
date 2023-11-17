@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -107,6 +108,7 @@ public class AlbumWindow implements Initializable {
     private MainWindow mainWindow;
     private ArtistWindow artistWindow;
     private Alert alertMessage;
+    private Album selectedAlbum;
 
     // insert data
     @FXML
@@ -119,17 +121,19 @@ public class AlbumWindow implements Initializable {
             alertMessage.setContentText("Debe ingresar un nombre");
             alertMessage.show();
 
+
         }else{
             Document document = new Document("_id", op.asignaID())
-                    .append("title", nameField.getText())
-                    .append("genre", albumBox.getValue())
-                    .append("year_release", yearChoiceBox.getValue())
+                    .append("title", nameField.getText().trim())
+                    .append("genre", albumBox.getValue().trim())
+                    .append("year_release", yearChoiceBox.getValue().trim())
                     .append("logic_delete", "0");
 
             op.insertDocument(document);
 
             nameField.clear();
-            //albumBox.getItems().clear();
+            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            configureTable();
         }
 
     }
@@ -137,21 +141,28 @@ public class AlbumWindow implements Initializable {
     @FXML
     void deleteButton_clicked(ActionEvent event) {
 
-        if(op.exists(searchField.getText()) != null) {
+
+        if(selectedAlbum != null) {
             //valida si se trata de borrado logico o fisico
             if (logicDelete.isSelected()) {
                 op.logicDelete(searchField.getText());
             } else {
-                long number = op.countDocuments();
-                System.out.println(number);
-                op.deleteDocuments("_id", searchField.getText());
+                //long number = op.countDocuments();
+                //System.out.println(number);
+                op.deleteDocuments("_id", selectedAlbum.getAlbumID());
             }
-        }else
+
+            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            configureTable();
+
+        }else {
             alertMessage = new Alert(Alert.AlertType.ERROR);
             alertMessage.setTitle("Error al Eliminar");
             alertMessage.setHeaderText(null);
-            alertMessage.setContentText("No se encontró es ID solicitado");
+            alertMessage.setContentText("Seleccion un Album a eliminar");
             alertMessage.show();
+        }
+
     }
 
     // close all
@@ -174,7 +185,7 @@ public class AlbumWindow implements Initializable {
     @FXML
     void searchButton_clicked(ActionEvent event) {
         String option = (String) filterBox_action(event);
-        System.out.println("chomin" + filterBox_action(event));
+        System.out.println(option);
 
         if(!searchField.getText().isEmpty() && option != null && option != null) {
 
@@ -183,7 +194,7 @@ public class AlbumWindow implements Initializable {
                     if (op.exists(searchField.getText()) != null) {
 
                         op.fetchAndDisplayDataOne(tableView, op.exists(searchField.getText())); // mostrar el solicitado
-                        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+                        configureTable();
 
                         break;
                     } else {
@@ -198,7 +209,7 @@ public class AlbumWindow implements Initializable {
                     if (op.existsForTitle(searchField.getText()) != null) {
 
                         op.fetchAndDisplayDataOne(tableView, op.existsForTitle(searchField.getText())); // mostrar el solicitado
-                        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+                        configureTable();
 
                         break;
                     } else {
@@ -213,7 +224,7 @@ public class AlbumWindow implements Initializable {
                     if (op.existsForGenre(searchField.getText()) != null) {
 
                         op.fetchAndDisplayDataOne(tableView, op.existsForGenre(searchField.getText())); // mostrar el solicitado
-                        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+                        configureTable();
 
 
                         break;
@@ -230,7 +241,7 @@ public class AlbumWindow implements Initializable {
                     if (op.existsForYear(searchField.getText()) != null) {
 
                         op.fetchAndDisplayDataOne(tableView, op.existsForYear(searchField.getText())); // mostrar el solicitado
-                        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+                        configureTable();
 
                         break;
                     } else {
@@ -246,7 +257,7 @@ public class AlbumWindow implements Initializable {
             }
         }else {
             op.fetchAndDisplayData(tableView); // carga el tableView con los datos
-            configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+            configureTable();
         }
     }
 
@@ -262,7 +273,7 @@ public class AlbumWindow implements Initializable {
         }else if(mask_button.getText().equals("Desenmascarar")){
             mask_button.setText("Enmascarar");
             op.fetchAndDisplayData(tableView); // carga el tableView con los datos
-            configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+            configureTable();
 
         }
 
@@ -273,10 +284,12 @@ public class AlbumWindow implements Initializable {
     @FXML
     void MouseClicked(MouseEvent event) {
 
-        Album selectedAlbum = tableView.getSelectionModel().getSelectedItem();
 
+        selectedAlbum = tableView.getSelectionModel().getSelectedItem();
+        System.out.println(selectedAlbum.getAlbumID());
         System.out.println(selectedAlbum.genreProperty());
         nameField.setText(selectedAlbum.getName());
+        System.out.println(selectedAlbum);
 
     }
 
@@ -319,11 +332,11 @@ public class AlbumWindow implements Initializable {
 
 
     // configure tableview
-    private void configureTable(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
+    private void configureTable(){
         idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
-        title.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
-        genre.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
-        year.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
+        nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
+        genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
+        yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
 
     }
 
@@ -363,7 +376,7 @@ public class AlbumWindow implements Initializable {
         MethodsInit.getInstance().setFiltersAlbum(filterBox);
 
         //op.fetchAndDisplayData(tableView);
-        configureTable(idColumn, nameColumn, genreColumn, yearColumn);
+        configureTable();
         filterBox.getSelectionModel().selectFirst();
         yearChoiceBox.getSelectionModel().selectFirst();
         albumBox.getSelectionModel().selectFirst();
