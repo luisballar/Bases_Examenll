@@ -200,6 +200,7 @@ public class MainWindow implements Initializable {
         scene = loader.getController();
 
         MethodsInit.getInstance().setGenres(genreBox);
+
         MethodsInit.getInstance().disable(viewSongsBut); // disable viewSongsBut
 
     }

@@ -54,6 +54,16 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+    // muestra solo el doc buscado
+    public void fetchAndDisplayDataOne(TableView tableView, Document doc) {
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        data.add(new Album(doc));
+
+        tableView.setItems(data);
+    }
+
+
 
     public void maskMethod(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
@@ -138,42 +148,42 @@ public class MongoOperations {
     }
 
     // verifica si existe por ID
-    public boolean exists(String idDoc) {
+    public Document exists(String idDoc) {
         try {
             Document document = collection.find(new Document("_id", idDoc)).first();
-            return document != null;
+            return document;
         } catch (IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 
     // verifica si existe por titulo
-    public boolean existsForTitle(String nameDoc) {
+    public Document existsForTitle(String nameDoc) {
         try {
             Document document = collection.find(new Document("title", nameDoc)).first();
-            return document != null;
+            return document;
         } catch (IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 
     // verifica si existe por genero
-    public boolean existsForGenre(String idDoc) {
+    public Document existsForGenre(String genreDoc) {
         try {
-            Document document = collection.find(new Document("genre", idDoc)).first();
-            return document != null;
+            Document document = collection.find(new Document("genre", genreDoc)).first();
+            return document ;
         } catch (IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 
     // verifica si existe por year
-    public boolean existsForYear(String idDoc) {
+    public Document existsForYear(String yearDoc) {
         try {
-            Document document = collection.find(new Document("year_realase", idDoc)).first();
-            return document != null;
+            Document document = collection.find(new Document("year_realease", yearDoc)).first();
+            return document;
         } catch (IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 

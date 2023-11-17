@@ -86,6 +86,8 @@ public class MethodsInit {
 
     }
 
+
+
     // codigo para acceder a los demas stages
     public void showWindow(FXMLLoader loader, Object objectClass, Scene scene, Stage nuevoStage, Stage actual, Button node, String fmxl) throws IOException {
         if(objectClass == null){
@@ -125,5 +127,7 @@ public class MethodsInit {
         filter.getItems().addAll(filters);
 
     }
+
+
 
 }
