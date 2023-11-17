@@ -3,6 +3,8 @@ package data;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Collation;
+import com.mongodb.client.model.CollationStrength;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import domain.Album;
@@ -55,6 +57,52 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+    // consulta para mostrar todos los albums por title
+    public void showAlbumsName(TableView tableView, String name) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("title").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    // consulta para mostrar todos los albums por genero
+    public void showAlbumsGenre(TableView tableView, String name) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("genre").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+
+    // consulta para mostrar todos los albums por genero
+    public void showAlbumsYear(TableView tableView, String name) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("year_release").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+
+
+
 
 
     // consulta para mostrar en el tableView Artistas
@@ -67,8 +115,8 @@ public class MongoOperations {
         }
 
         tableView.setItems(data);
-        System.out.println(data);
     }
+
 
 
 
@@ -84,7 +132,7 @@ public class MongoOperations {
 
 
     // enmascara en el tableView el año
-    public void maskMethod(TableView tableView) {
+    public void maskAlbum(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
         ObservableList<Album> data = FXCollections.observableArrayList();
 
@@ -189,9 +237,11 @@ public class MongoOperations {
     }
 
     // verifica si existe por titulo
-    public Document existsForTitle(String nameDoc) {
+    public Document existsForTitle(String titleDoc) {
         try {
-            Document document = collection.find(new Document("title", nameDoc)).first();
+            Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
+
+            Document document = collection.find(new Document("title", titleDoc)).collation(collation).first(); // standard para ignorar minusculas
             return document;
         } catch (IllegalArgumentException e) {
             return null;
@@ -201,17 +251,20 @@ public class MongoOperations {
     // verifica si existe por genero
     public Document existsForGenre(String genreDoc) {
         try {
-            Document document = collection.find(new Document("genre", genreDoc)).first();
-            return document ;
+            Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
+
+            Document document = collection.find(new Document("genre", genreDoc)).collation(collation).first();
+            return document;
         } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
+
     // verifica si existe por year
     public Document existsForYear(String yearDoc) {
         try {
-            Document document = collection.find(new Document("year_realease", yearDoc)).first();
+            Document document = collection.find(new Document("year_release", yearDoc)).first();
             return document;
         } catch (IllegalArgumentException e) {
             return null;

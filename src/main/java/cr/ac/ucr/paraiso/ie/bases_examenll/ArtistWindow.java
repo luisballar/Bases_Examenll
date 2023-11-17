@@ -347,6 +347,7 @@ public class ArtistWindow implements Initializable {
         setFiltersAlbum(); // set filters on filterBox
 
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
+        searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
 
         op.fetchAndDisplayDataArtist(tableView);

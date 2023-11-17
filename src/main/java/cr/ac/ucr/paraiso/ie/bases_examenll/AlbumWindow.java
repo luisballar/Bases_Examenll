@@ -146,14 +146,11 @@ public class AlbumWindow implements Initializable {
     @FXML
     void deleteButton_clicked(ActionEvent event) {
 
-
         if(selectedAlbum != null) {
             //valida si se trata de borrado logico o fisico
             if (logicDelete.isSelected()) {
                 op.logicDelete(searchField.getText());
             } else {
-                //long number = op.countDocuments();
-                //System.out.println(number);
                 op.deleteDocuments("_id", selectedAlbum.getAlbumID());
             }
 
@@ -213,7 +210,7 @@ public class AlbumWindow implements Initializable {
                 case "Nombre":
                     if (op.existsForTitle(searchField.getText()) != null) {
 
-                        op.fetchAndDisplayDataOne(tableView, op.existsForTitle(searchField.getText())); // mostrar el solicitado
+                        op.showAlbumsName(tableView, searchField.getText()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -228,9 +225,8 @@ public class AlbumWindow implements Initializable {
                 case "Genero":
                     if (op.existsForGenre(searchField.getText()) != null) {
 
-                        op.fetchAndDisplayDataOne(tableView, op.existsForGenre(searchField.getText())); // mostrar el solicitado
+                        op.showAlbumsGenre(tableView, searchField.getText()); // mostrar el solicitado
                         configureTable();
-
 
                         break;
                     } else {
@@ -245,7 +241,7 @@ public class AlbumWindow implements Initializable {
                 case "Año":
                     if (op.existsForYear(searchField.getText()) != null) {
 
-                        op.fetchAndDisplayDataOne(tableView, op.existsForYear(searchField.getText())); // mostrar el solicitado
+                        op.showAlbumsYear(tableView, searchField.getText()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -272,7 +268,7 @@ public class AlbumWindow implements Initializable {
         if(mask_button.getText().equals("Enmascarar")){
             mask_button.setText("Desenmascarar");
 
-            op.maskMethod(tableView); // metodo que enmascara el year
+            op.maskAlbum(tableView); // metodo que enmascara el year
             configureTableMask(idColumn, nameColumn, genreColumn, yearColumn);
 
         }else if(mask_button.getText().equals("Desenmascarar")){
@@ -392,8 +388,9 @@ public class AlbumWindow implements Initializable {
         MethodsInit.getInstance().disable(viewAlbumBut);
 
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
+        searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
-        //op.fetchAndDisplayData(tableView);
+        op.fetchAndDisplayData(tableView);
 
         configureTable();
         setFiltersAlbum();
