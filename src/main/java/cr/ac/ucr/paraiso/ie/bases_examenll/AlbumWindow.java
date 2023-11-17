@@ -125,7 +125,7 @@ public class AlbumWindow implements Initializable {
             op.insertDocument(document);
 
             nameField.clear();
-            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
             configureTable();
             albumBox.setValue(null);
             yearChoiceBox.setValue(null);
@@ -154,7 +154,7 @@ public class AlbumWindow implements Initializable {
                 op.deleteDocuments("_id", selectedAlbum.getAlbumID());
             }
 
-            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
             configureTable();
 
         }else {
@@ -174,7 +174,8 @@ public class AlbumWindow implements Initializable {
 
     }
 
-    // ver que tiene seleccionado el filtro
+
+    // ver que tiene seleccionado el filterBox
     @FXML
     public Object filterBox_action(ActionEvent event) {
         return filterBox.getValue();
@@ -189,13 +190,13 @@ public class AlbumWindow implements Initializable {
         String option = (String) filterBox_action(event);
         System.out.println(option);
 
-        if(!searchField.getText().isEmpty() && option != null && option != null) {
+        if(!searchField.getText().isEmpty() && option != null) {
 
             switch (option) {
                 case "ID":
                     if (op.exists(searchField.getText()) != null) {
 
-                        op.fetchAndDisplayDataOne(tableView, op.exists(searchField.getText())); // mostrar el solicitado
+                        op.fetchAndDisplayDataOneAlbum(tableView, op.exists(searchField.getText())); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -257,7 +258,7 @@ public class AlbumWindow implements Initializable {
 
             }
         }else {
-            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
             configureTable();
         }
     }
@@ -269,11 +270,11 @@ public class AlbumWindow implements Initializable {
             mask_button.setText("Desenmascarar");
 
             op.maskAlbum(tableView); // metodo que enmascara el year
-            configureTableMask(idColumn, nameColumn, genreColumn, yearColumn);
+            configureTable(); // enmascara
 
         }else if(mask_button.getText().equals("Desenmascarar")){
             mask_button.setText("Enmascarar");
-            op.fetchAndDisplayData(tableView); // carga el tableView con los datos
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
             configureTable();
 
         }
@@ -287,8 +288,6 @@ public class AlbumWindow implements Initializable {
 
 
         selectedAlbum = tableView.getSelectionModel().getSelectedItem();
-        System.out.println(selectedAlbum.getAlbumID());
-        System.out.println(selectedAlbum.genreProperty());
         nameField.setText(selectedAlbum.getName());
         System.out.println(selectedAlbum);
 
@@ -341,14 +340,6 @@ public class AlbumWindow implements Initializable {
 
     }
 
-    // enmascara el tableView
-    private void configureTableMask(TableColumn<Album, String> idColumn, TableColumn<Album, String> title, TableColumn<Album, String> genre, TableColumn<Album, String> year){
-        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
-        nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
-        genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
-        yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
-
-    }
 
     public void setYears(){
 
@@ -390,7 +381,7 @@ public class AlbumWindow implements Initializable {
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
         searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
-        op.fetchAndDisplayData(tableView);
+        op.fetchAndDisplayDataAlbum(tableView); // mostrar los datos de la colec en el tb
 
         configureTable();
         setFiltersAlbum();

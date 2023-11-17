@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Collation;
 import com.mongodb.client.model.CollationStrength;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import domain.Album;
@@ -44,9 +45,8 @@ public class MongoOperations {
 
     }
 
-
     // consulta para mostrar en el tableView Albums
-    public void fetchAndDisplayData(TableView tableView) {
+    public void fetchAndDisplayDataAlbum(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
         ObservableList<Album> data = FXCollections.observableArrayList();
 
@@ -56,6 +56,39 @@ public class MongoOperations {
 
         tableView.setItems(data);
     }
+
+    // consulta para mostrar en el tableView Artistas
+    public void fetchAndDisplayDataArtist(TableView tableView) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Artist(document));
+        }
+
+        tableView.setItems(data);
+    }
+
+
+    // muestra solo un album con el id ingresado
+    public void fetchAndDisplayDataOneAlbum(TableView tableView, Document doc) {
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        data.add(new Album(doc));
+
+        tableView.setItems(data);
+    }
+
+
+    // muestra solo un artitsta con el id ingresado
+    public void fetchAndDisplayDataOneArtist(TableView tableView, Document doc) {
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        data.add(new Artist(doc));
+
+        tableView.setItems(data);
+    }
+
 
     // consulta para mostrar todos los albums por title
     public void showAlbumsName(TableView tableView, String name) {
@@ -71,6 +104,27 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+
+    // consulta para mostrar todos los albums por title
+    public void showArtistName(TableView tableView, String partialName) {
+        FindIterable<Document> findIterable = collection.find();
+
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            String artistName = document.getString("name");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistName != null && artistName.toLowerCase().matches(".*" + partialName.toLowerCase() + ".*")) {
+                data.add(new Artist(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+
+
     // consulta para mostrar todos los albums por genero
     public void showAlbumsGenre(TableView tableView, String name) {
         FindIterable<Document> findIterable = collection.find();
@@ -84,6 +138,39 @@ public class MongoOperations {
 
         tableView.setItems(data);
     }
+
+    // consulta para mostrar todos los artistas por genero
+    public void showArtistsGenre(TableView tableView, String name) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("genre").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Artist(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    // consulta para mostrar todos los albums por title
+    public void showArtistNationality(TableView tableView, String partialNat) {
+        FindIterable<Document> findIterable = collection.find();
+
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            String artistName = document.getString("nationality");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistName != null && artistName.toLowerCase().matches(".*" + partialNat.toLowerCase() + ".*")) {
+                data.add(new Artist(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
 
 
     // consulta para mostrar todos los albums por genero
@@ -99,37 +186,6 @@ public class MongoOperations {
 
         tableView.setItems(data);
     }
-
-
-
-
-
-
-    // consulta para mostrar en el tableView Artistas
-    public void fetchAndDisplayDataArtist(TableView tableView) {
-        FindIterable<Document> findIterable = collection.find();
-        ObservableList<Artist> data = FXCollections.observableArrayList();
-
-        for (Document document : findIterable) {
-            data.add(new Artist(document));
-        }
-
-        tableView.setItems(data);
-    }
-
-
-
-
-
-    // muestra solo el doc buscado
-    public void fetchAndDisplayDataOne(TableView tableView, Document doc) {
-        ObservableList<Album> data = FXCollections.observableArrayList();
-
-        data.add(new Album(doc));
-
-        tableView.setItems(data);
-    }
-
 
     // enmascara en el tableView el año
     public void maskAlbum(TableView tableView) {
@@ -155,6 +211,7 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+    // inserta un documento en una coleccion
     public void insertDocument(Document document) {
         // Realiza la inserción
         collection.insertOne(document);
@@ -215,15 +272,23 @@ public class MongoOperations {
         return collection.countDocuments();
     }
 
-    // Secuencial ID
-    public String asignaID(){
-        long asignado = 0;
-        if(countDocuments() == 0)
+    // Revisa el ultimo ID y asignar ultimo +1
+    public String asignaID() {
+        String asignado;
+        long asginadoSuma = 0;
+
+        // Obtener el último documento ordenando por _id de manera descendente
+        Document lastDocument = collection.find().sort(new Document("_id", -1)).first();
+
+        if (lastDocument != null) {
+            // Obtener el valor del último _id y sumar 1
+            asignado = lastDocument.getString("_id");
+            asginadoSuma = Long.parseLong(asignado) + 1;
+        } else {
             return "1";
-        else if(countDocuments() > 0)
-            asignado = countDocuments() + 1;
-        
-        return Long.toString(asignado);
+        }
+
+        return Long.toString(asginadoSuma);
     }
 
     // verifica si existe por ID
@@ -248,6 +313,24 @@ public class MongoOperations {
         }
     }
 
+    // verifica si existe por titulo
+    public Document existsForArtistName(String partialName) {
+        try {
+            Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
+
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Document document = collection.find(
+                    Filters.regex("name", partialName, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+            ).collation(collation).first();
+
+            System.out.println(document);
+            return document;
+        } catch (IllegalArgumentException e) {
+
+            return null;
+        }
+    }
+
     // verifica si existe por genero
     public Document existsForGenre(String genreDoc) {
         try {
@@ -260,6 +343,23 @@ public class MongoOperations {
         }
     }
 
+    // verifica si existe artista por nacionalidad
+    public Document existsForNationality(String partialNat) {
+        try {
+            Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
+
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Document document = collection.find(
+                    Filters.regex("nationality", partialNat, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+            ).collation(collation).first();
+
+            System.out.println(document);
+            return document;
+        } catch (IllegalArgumentException e) {
+
+            return null;
+        }
+    }
 
     // verifica si existe por year
     public Document existsForYear(String yearDoc) {

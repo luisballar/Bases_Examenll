@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.bson.Document;
@@ -111,7 +112,7 @@ public class ArtistWindow implements Initializable {
     private MainWindow mainWindow;
     private AlbumWindow albumWindow;
     private Alert alertMessage;
-    private Album selectedAlbum;
+    private Artist selecteArtist;
 
     public ArtistWindow() {
     }
@@ -149,7 +150,24 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void deleteButton_clicked(ActionEvent event) {
+        if(selecteArtist != null) {
+            //valida si se trata de borrado logico o fisico
+            if (logicDelete.isSelected()) {
+                op.logicDelete(searchField.getText());
+            } else {
+                op.deleteDocuments("_id", selecteArtist.getArtistID());
+            }
 
+            op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
+            configureTable();
+
+        }else {
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Eliminar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("Seleccione un Artista a eliminar");
+            alertMessage.show();
+        }
     }
 
     @FXML
@@ -159,8 +177,8 @@ public class ArtistWindow implements Initializable {
     }
 
     @FXML
-    void filterBox_action(ActionEvent event) {
-
+    public Object filterBox_action(ActionEvent event) {
+        return filterBox.getValue();
     }
 
     @FXML
@@ -170,12 +188,96 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void mask_button_clicked(ActionEvent event) {
+        if(mask_button.getText().equals("Enmascarar")){
+            mask_button.setText("Desenmascarar");
 
+            op.maskArtist(tableView); // metodo que enmascara el year
+            configureTable(); // enmascara
+
+        }else if(mask_button.getText().equals("Desenmascarar")){
+            mask_button.setText("Enmascarar");
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
+            configureTable();
+
+        }
     }
 
     @FXML
     void searchButton_clicked(ActionEvent event) {
+        String option = (String) filterBox_action(event);
+        System.out.println(option);
 
+        if(!searchField.getText().isEmpty() && option != null) {
+
+            switch (option) {
+                case "ID":
+                    if (op.exists(searchField.getText()) != null) {
+
+                        op.fetchAndDisplayDataOneArtist(tableView, op.exists(searchField.getText())); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        alertMessage = new Alert(Alert.AlertType.ERROR);
+                        alertMessage.setTitle("Error de Búsqueda");
+                        alertMessage.setHeaderText(null);
+                        alertMessage.setContentText("No se encontró el ID solicitado");
+                        alertMessage.show();
+                        break;
+                    }
+                case "Nombre":
+                    if (op.existsForArtistName(searchField.getText()) != null) {
+
+                        op.showArtistName(tableView, searchField.getText()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        alertMessage = new Alert(Alert.AlertType.ERROR);
+                        alertMessage.setTitle("Error de Búsqueda");
+                        alertMessage.setHeaderText(null);
+                        alertMessage.setContentText("No se encontró el Nombre solicitado");
+                        alertMessage.show();
+                        break;
+                    }
+                case "Genero":
+                    if (op.existsForGenre(searchField.getText()) != null) {
+
+                        op.showArtistsGenre(tableView, searchField.getText()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        alertMessage = new Alert(Alert.AlertType.ERROR);
+                        alertMessage.setTitle("Error de Búsqueda");
+                        alertMessage.setHeaderText(null);
+                        alertMessage.setContentText("No se encontró el Genero solicitado");
+                        alertMessage.show();
+                        break;
+                    }
+
+                case "Nacionalidad":
+                    if (op.existsForNationality(searchField.getText()) != null) {
+
+                        op.showArtistNationality(tableView, searchField.getText()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        alertMessage = new Alert(Alert.AlertType.ERROR);
+                        alertMessage.setTitle("Error de Búsqueda");
+                        alertMessage.setHeaderText(null);
+                        alertMessage.setContentText("No se encontró el Año solicitado");
+                        alertMessage.show();
+                        break;
+                    }
+
+
+            }
+        }else {
+            op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos de la colect
+            configureTable();
+        }
     }
 
     @FXML
@@ -213,6 +315,13 @@ public class ArtistWindow implements Initializable {
     }
 
 
+    @FXML
+    void MouseClicked(MouseEvent event) {
+
+        selecteArtist = tableView.getSelectionModel().getSelectedItem();
+        nameField.setText(selecteArtist.getName());
+
+    }
 
     public void setNationality(){
 
@@ -304,7 +413,6 @@ public class ArtistWindow implements Initializable {
 
     }
 
-
     private void configureTable(){
         idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().artistIDProperty());
         nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().nameProperty());
@@ -313,30 +421,18 @@ public class ArtistWindow implements Initializable {
 
     }
 
-
     public void setFiltersAlbum(){
         String[] filters = {
                 "ID",
                 "Nombre",
                 "Nacionalidad",
-                "Género"
+                "Genero"
         };
 
         filterBox.getItems().addAll(filters);
         filterBox.getSelectionModel().selectFirst();
 
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override

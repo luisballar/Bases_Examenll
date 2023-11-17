@@ -16,14 +16,14 @@ public class Artist {
         this.artistID = new SimpleStringProperty(document.getString("_id"));
         this.name = new SimpleStringProperty(document.getString("name"));
         this.nationality = new SimpleStringProperty(document.getString("nationality"));
-        this.genre = new SimpleStringProperty(document.getString("gender"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
     }
 
     public Artist(Document document, String text){
         this.artistID = new SimpleStringProperty(document.getString("_id"));
         this.name = new SimpleStringProperty(document.getString("artist_name"));
         this.nationality = getNationality(document); // traer enmascarado
-        this.genre = new SimpleStringProperty(document.getString("gender"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
 
     }
 
