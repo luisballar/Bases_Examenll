@@ -26,7 +26,6 @@ public class Album {
     }
 
 
-
     public Album(SimpleStringProperty albumID, SimpleStringProperty name, SimpleStringProperty genre, SimpleStringProperty year) {
         this.albumID = albumID;
         this.name = name;
@@ -74,12 +73,6 @@ public class Album {
         return year.get();
     }
 
-    // return enmascaramiento
-    public SimpleStringProperty getYear(Document doc) {
-        char[] enmask = new char[new String(doc.getString("year_release")).length()];
-        Arrays.fill(enmask, '*');
-        return new SimpleStringProperty(String.valueOf(enmask));
-    }
 
     public SimpleStringProperty yearProperty() {
         return year;
@@ -87,6 +80,13 @@ public class Album {
 
     public void setYear(String year) {
         this.year.set(year);
+    }
+
+    // return enmascaramiento
+    public SimpleStringProperty getYear(Document doc) {
+        char[] enmask = new char[new String(doc.getString("year_release")).length()];
+        Arrays.fill(enmask, '*');
+        return new SimpleStringProperty(String.valueOf(enmask));
     }
 
     @Override

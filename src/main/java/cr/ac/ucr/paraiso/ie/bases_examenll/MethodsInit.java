@@ -116,16 +116,6 @@ public class MethodsInit {
         System.out.println(fmxl + " direccion: " + hashCode);
     }
 
-    public void setFiltersAlbum(ComboBox filter){
-        String[] filters = {
-                "ID",
-                "Nombre",
-                "Genero",
-                "Año"
-        };
 
-        filter.getItems().addAll(filters);
-
-    }
 
 }

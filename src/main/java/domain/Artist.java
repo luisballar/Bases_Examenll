@@ -1,72 +1,94 @@
 package domain;
 
+import javafx.beans.property.SimpleStringProperty;
+import org.bson.Document;
+
+import java.util.Arrays;
+
 public class Artist {
-    private int artistID;
-    private String name;
-    private String lastName;
-    private String natioanlity;
-    private String genre;
+    private SimpleStringProperty artistID;
+    private SimpleStringProperty name;
+    private SimpleStringProperty nationality;
+    private SimpleStringProperty genre;
 
-    public Artist() {
+
+    public Artist(Document document){
+        this.artistID = new SimpleStringProperty(document.getString("_id"));
+        this.name = new SimpleStringProperty(document.getString("artist_name"));
+        this.nationality = new SimpleStringProperty(document.getString("nationality"));
+        this.genre = new SimpleStringProperty(document.getString("gender"));
     }
 
-    public Artist(int artistID, String name, String lastName, String natioanlity, String genre) {
-        this.artistID = artistID;
-        this.name = name;
-        this.lastName = lastName;
-        this.natioanlity = natioanlity;
-        this.genre = genre;
+    public Artist(Document document, String text){
+        this.artistID = new SimpleStringProperty(document.getString("_id"));
+        this.name = new SimpleStringProperty(document.getString("artist_name"));
+        this.nationality = getNationality(document); // traer enmascarado
+        this.genre = new SimpleStringProperty(document.getString("gender"));
+
     }
 
-    public int getArtistID() {
+    public String getArtistID() {
+        return artistID.get();
+    }
+
+    public SimpleStringProperty artistIDProperty() {
         return artistID;
     }
 
-    public void setArtistID(int artistID) {
-        this.artistID = artistID;
+    public void setArtistID(String artistID) {
+        this.artistID.set(artistID);
     }
 
     public String getName() {
+        return name.get();
+    }
+
+    public SimpleStringProperty nameProperty() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getNationality() {
+        return nationality.get();
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public SimpleStringProperty nationalityProperty() {
+        return nationality;
     }
 
-    public String getNatioanlity() {
-        return natioanlity;
-    }
-
-    public void setNatioanlity(String natioanlity) {
-        this.natioanlity = natioanlity;
+    public void setNationality(String nationality) {
+        this.nationality.set(nationality);
     }
 
     public String getGenre() {
+        return genre.get();
+    }
+
+    public SimpleStringProperty genreProperty() {
         return genre;
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre.set(genre);
+    }
+
+    // retorna la nacionalidad enmascarada
+    public SimpleStringProperty getNationality(Document doc) {
+        char[] enmask = new char[new String(doc.getString("nationality")).length()];
+        Arrays.fill(enmask, '*');
+        return new SimpleStringProperty(String.valueOf(enmask));
     }
 
     @Override
     public String toString() {
         return "Artist{" +
                 "artistID=" + artistID +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", natioanlity='" + natioanlity + '\'' +
-                ", genre='" + genre + '\'' +
+                ", name=" + name +
+                ", nationality=" + nationality +
+                ", genre=" + genre +
                 '}';
     }
-
 }

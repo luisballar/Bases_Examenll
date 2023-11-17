@@ -44,7 +44,7 @@ public class AlbumWindow implements Initializable {
     private AnchorPane field;
 
     @FXML
-    private ComboBox<?> filterBox;
+    private ComboBox<String> filterBox;
 
     @FXML
     private TableColumn<Album, String> genreColumn;
@@ -114,15 +114,8 @@ public class AlbumWindow implements Initializable {
     @FXML
     void addButton_clcked(ActionEvent event) {
 
-        if(nameField.getText().isEmpty()){
-            alertMessage = new Alert(Alert.AlertType.ERROR);
-            alertMessage.setTitle("Error al Ingresar");
-            alertMessage.setHeaderText(null);
-            alertMessage.setContentText("Debe ingresar un nombre");
-            alertMessage.show();
+        if(albumBox.getValue() != null && yearChoiceBox.getValue() != null && !nameField.getText().isEmpty()){
 
-
-        }else{
             Document document = new Document("_id", op.asignaID())
                     .append("title", nameField.getText().trim())
                     .append("genre", albumBox.getValue().trim())
@@ -134,6 +127,16 @@ public class AlbumWindow implements Initializable {
             nameField.clear();
             op.fetchAndDisplayData(tableView); // carga el tableView con los datos
             configureTable();
+
+
+        }else{
+
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Ingresar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("Debe ingresar todos los datos");
+            alertMessage.show();
+
         }
 
     }
@@ -364,6 +367,20 @@ public class AlbumWindow implements Initializable {
 
         yearChoiceBox.getItems().addAll(yearsArray);
 
+
+    }
+
+    public void setFiltersAlbum(){
+        String[] filters = {
+                "ID",
+                "Nombre",
+                "Genero",
+                "Año"
+        };
+
+        filterBox.getItems().addAll(filters);
+        filterBox.getSelectionModel().selectFirst();
+
     }
 
 
@@ -373,13 +390,12 @@ public class AlbumWindow implements Initializable {
         setYears();// set years on genreBox
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
-        MethodsInit.getInstance().setFiltersAlbum(filterBox);
+
 
         //op.fetchAndDisplayData(tableView);
+
         configureTable();
-        filterBox.getSelectionModel().selectFirst();
-        yearChoiceBox.getSelectionModel().selectFirst();
-        albumBox.getSelectionModel().selectFirst();
+        setFiltersAlbum();
 
     }
 }

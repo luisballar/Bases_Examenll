@@ -1,19 +1,19 @@
 package cr.ac.ucr.paraiso.ie.bases_examenll;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import data.MongoOperations;
+import domain.Album;
+import domain.Artist;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.bson.Document;
@@ -24,6 +24,19 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ArtistWindow implements Initializable {
+
+    @FXML
+    private TableColumn<Artist, String> idColumn;
+
+    @FXML
+    private TableColumn<Artist, String> nameColumn;
+
+
+    @FXML
+    private TableColumn<Artist, String> nationalityColumn;
+
+    @FXML
+    private TableColumn<Artist, String> genreColumn;
 
     @FXML
     private Button addButton;
@@ -41,10 +54,8 @@ public class ArtistWindow implements Initializable {
     private AnchorPane field;
 
     @FXML
-    private ComboBox<?> filterBox;
+    private ComboBox<String> filterBox;
 
-    @FXML
-    private ChoiceBox<String> genreBox;
 
     @FXML
     private TextField lastNameField;
@@ -68,7 +79,13 @@ public class ArtistWindow implements Initializable {
     private TextField searchField;
 
     @FXML
-    private TableView<?> tableView;
+    private TableView<Artist> tableView;
+
+    @FXML
+    private ChoiceBox<String> nationalityBox;
+
+    @FXML
+    private ChoiceBox<String> genreBox;
 
     @FXML
     private Button updateButton;
@@ -89,33 +106,44 @@ public class ArtistWindow implements Initializable {
     private Scene scene;
     private Stage nuevoStage;
     private Stage actual;
-    private MongoOperations insert;
-
     private String collectionName = "Artist";
+    private MongoOperations op = new MongoOperations(collectionName);
     private MainWindow mainWindow;
     private AlbumWindow albumWindow;
+    private Alert alertMessage;
+    private Album selectedAlbum;
 
     public ArtistWindow() {
     }
 
     @FXML
     void addButton_clcked(ActionEvent event) {
-        insert = new MongoOperations(collectionName);
 
+        if(nationalityBox.getValue() != null && genreBox.getValue() != null && !nameField.getText().isEmpty()){
 
-        Document document = new Document("_id",new ObjectId())
-                .append("artist_name", nameField.getText())
-                .append("artist_lastName",lastNameField.getText())
-                .append("nationality", nationalField.getText())
-                .append("gender", genreBox.getValue())
-                .append("logic_delete", 0);
+            Document document = new Document("_id", op.asignaID())
+                    .append("name", nameField.getText().trim())
+                    .append("nationality", nationalityBox.getValue().trim())
+                    .append("genre", genreBox.getValue().trim())
+                    .append("logic_delete", "0");
 
-        insert.insertDocument(document);
+            op.insertDocument(document);
 
-        nameField.clear();
-        lastNameField.clear();
-        nationalField.clear();
-        genreBox.getItems().clear();
+            nameField.clear();
+            op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
+            configureTable();
+            genreBox.setValue(null);
+            nationalityBox.setValue(null);
+
+        }else{
+
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Ingresar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("Debe ingresar todos los datos");
+            alertMessage.show();
+
+        }
 
     }
 
@@ -185,10 +213,140 @@ public class ArtistWindow implements Initializable {
     }
 
 
+
+    public void setNationality(){
+
+        String[] nationalities = {
+                "Estadounidense",
+                "Canadiense",
+                "Británico",
+                "Alemán",
+                "Francés",
+                "Italiano",
+                "Chino",
+                "Japonés",
+                "Brasileño",
+                "Argentino",
+                "Mexicano",
+                "Indio",
+                "Australiano",
+                "Sudafricano",
+                "Nigeriano",
+                "Egipcio",
+                "Ruso",
+                "Turco",
+                "Iraní",
+                "Saudita",
+                "Surcoreano",
+                "Indonesio",
+                "Neozelandés",
+                "Marroquí",
+                "Keniano",
+                "Chileno",
+                "Peruano",
+                "Colombiano",
+                "Venezolano",
+                "Español",
+                "Portugués",
+                "Griego",
+                "Noruego",
+                "Sueco",
+                "Finlandés",
+                "Danés",
+                "Suizo",
+                "Austríaco",
+                "Holandés",
+                "Belga",
+                "Luxemburgués",
+                "Irlandés",
+                "Polaco",
+                "Húngaro",
+                "Checo",
+                "Eslovaco",
+                "Rumano",
+                "Búlgaro",
+                "Croata",
+                "Serbio",
+                "Montenegrino",
+                "Bosnio",
+                "Macedonio",
+                "Albanés",
+                "Kosovar",
+                "Esloveno",
+                "Estonio",
+                "Letón",
+                "Lituano",
+                "Bielorruso",
+                "Ucraniano",
+                "Georgiano",
+                "Armenio",
+                "Azerí",
+                "Kazajo",
+                "Uzbeko",
+                "Turcomano",
+                "Kirguís",
+                "Tayiko",
+                "Mongol",
+                "Norteamericano",
+                "Sudamericano",
+                "Europeo",
+                "Asiático",
+                "Africano",
+                "Oceaniano",
+                "Caribeño",
+                "Centroamericano",
+                "Sudamericano",
+                "Norteamericano",
+                "Antártico"
+        };
+
+        nationalityBox.getItems().addAll(nationalities);
+
+    }
+
+
+    private void configureTable(){
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().artistIDProperty());
+        nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().nameProperty());
+        nationalityColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().nationalityProperty());
+        genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().genreProperty());
+
+    }
+
+
+    public void setFiltersAlbum(){
+        String[] filters = {
+                "ID",
+                "Nombre",
+                "Nacionalidad",
+                "Género"
+        };
+
+        filterBox.getItems().addAll(filters);
+        filterBox.getSelectionModel().selectFirst();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        MethodsInit.getInstance().setSex(genreBox); // set genres on genreBox
+        MethodsInit.getInstance().setGenres(genreBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewArtistBut); // disable viewArtistBut
+        setNationality(); // set nationalities on genreBox
+        setFiltersAlbum(); // set filters on filterBox
+
 
     }
 }

@@ -6,6 +6,7 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import domain.Album;
+import domain.Artist;
 import domain.Song;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,7 +43,7 @@ public class MongoOperations {
     }
 
 
-    // consulta para mostrar en el tableView
+    // consulta para mostrar en el tableView Albums
     public void fetchAndDisplayData(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
         ObservableList<Album> data = FXCollections.observableArrayList();
@@ -54,6 +55,23 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+
+
+    // consulta para mostrar en el tableView Artistas
+    public void fetchAndDisplayDataArtist(TableView tableView) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Artist(document));
+        }
+
+        tableView.setItems(data);
+    }
+
+
+
+
     // muestra solo el doc buscado
     public void fetchAndDisplayDataOne(TableView tableView, Document doc) {
         ObservableList<Album> data = FXCollections.observableArrayList();
@@ -64,13 +82,25 @@ public class MongoOperations {
     }
 
 
-
+    // enmascara en el tableView el año
     public void maskMethod(TableView tableView) {
         FindIterable<Document> findIterable = collection.find();
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
             data.add(new Album(document, ""));
+        }
+
+        tableView.setItems(data);
+    }
+
+    // enmascara en el tableView la nacionalidad
+    public void maskArtist(TableView tableView) {
+        FindIterable<Document> findIterable = collection.find();
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Artist(document, ""));
         }
 
         tableView.setItems(data);
