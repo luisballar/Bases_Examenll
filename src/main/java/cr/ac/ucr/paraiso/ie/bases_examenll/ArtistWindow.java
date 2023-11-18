@@ -130,7 +130,7 @@ public class ArtistWindow implements Initializable {
                     .append("name", nameField.getText().trim())
                     .append("nationality", nationalityBox.getValue().trim())
                     .append("genre", genreBox.getValue().trim())
-                    .append("logic_delete", "0");
+                    .append("logic_delete", 0);
 
             op.insertDocument(document);
 
@@ -161,6 +161,12 @@ public class ArtistWindow implements Initializable {
             } else {
                 op.deleteDocuments(selecteArtist.getArtistID());
             }
+
+            nameField.clear();
+            nationalityBox.setValue(null);
+            genreBox.setValue(null);
+            logicDelete.setSelected(false);
+
 
             op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
             configureTable();
@@ -215,9 +221,9 @@ public class ArtistWindow implements Initializable {
 
             switch (option) {
                 case "ID":
-                    if (op.exists(Integer.parseInt(searchField.getText())) != null) {
+                    if (op.exists(Integer.parseInt(searchField.getText().trim())) != null) {
 
-                        op.fetchAndDisplayDataOneArtist(tableView, op.exists(Integer.parseInt(searchField.getText()))); // mostrar el solicitado
+                        op.fetchAndDisplayDataOneArtist(tableView, op.exists(Integer.parseInt(searchField.getText().trim()))); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -230,9 +236,9 @@ public class ArtistWindow implements Initializable {
                         break;
                     }
                 case "Nombre":
-                    if (op.existsForArtistName(searchField.getText()) != null) {
+                    if (op.existsForArtistName(searchField.getText().trim()) != null) {
 
-                        op.showArtistName(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showArtistName(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -245,9 +251,9 @@ public class ArtistWindow implements Initializable {
                         break;
                     }
                 case "Genero":
-                    if (op.existsForGenre(searchField.getText()) != null) {
+                    if (op.existsForGenre(searchField.getText().trim()) != null) {
 
-                        op.showArtistsGenre(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showArtistsGenre(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -261,9 +267,9 @@ public class ArtistWindow implements Initializable {
                     }
 
                 case "Nacionalidad":
-                    if (op.existsForNationality(searchField.getText()) != null) {
+                    if (op.existsForNationality(searchField.getText().trim()) != null) {
 
-                        op.showArtistNationality(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showArtistNationality(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;

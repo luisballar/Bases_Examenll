@@ -48,7 +48,8 @@ public class MongoOperations {
 
     // consulta para mostrar en el tableView Albums
     public void fetchAndDisplayDataAlbum(TableView tableView) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
@@ -60,7 +61,8 @@ public class MongoOperations {
 
     // consulta para mostrar en el tableView Artistas
     public void fetchAndDisplayDataArtist(TableView tableView) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
@@ -74,6 +76,8 @@ public class MongoOperations {
 
     // muestra solo un album con el id ingresado
     public void fetchAndDisplayDataOneAlbum(TableView tableView, Document doc) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         data.add(new Album(doc));
@@ -84,6 +88,8 @@ public class MongoOperations {
 
     // muestra solo un artitsta con el id ingresado
     public void fetchAndDisplayDataOneArtist(TableView tableView, Document doc) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
         data.add(new Artist(doc));
@@ -93,7 +99,8 @@ public class MongoOperations {
 
     // consulta para mostrar todos los albums por title
     public void showAlbumsName(TableView tableView, String partialName) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
 
         ObservableList<Album> data = FXCollections.observableArrayList();
 
@@ -111,7 +118,8 @@ public class MongoOperations {
 
     // consulta para mostrar todos los albums por title
     public void showArtistName(TableView tableView, String partialName) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
 
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
@@ -128,12 +136,17 @@ public class MongoOperations {
     }
 
     // consulta para mostrar todos los albums por genero
-    public void showAlbumsGenre(TableView tableView, String name) {
-        FindIterable<Document> findIterable = collection.find();
+    public void showAlbumsGenre(TableView tableView, String partialGenre) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            if(document.getString("genre").toLowerCase().equals(name.toLowerCase())) {
+            String albumGenre = document.getString("genre");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (albumGenre != null && albumGenre.toLowerCase().matches(".*" + partialGenre.toLowerCase() + ".*")) {
                 data.add(new Album(document));
             }
         }
@@ -142,12 +155,17 @@ public class MongoOperations {
     }
 
     // consulta para mostrar todos los artistas por genero
-    public void showArtistsGenre(TableView tableView, String name) {
-        FindIterable<Document> findIterable = collection.find();
+    public void showArtistsGenre(TableView tableView, String partialGenre) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            if(document.getString("genre").toLowerCase().equals(name.toLowerCase())) {
+            String artistGenre = document.getString("genre");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistGenre != null && artistGenre.toLowerCase().matches(".*" + partialGenre.toLowerCase() + ".*")) {
                 data.add(new Artist(document));
             }
         }
@@ -155,17 +173,18 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
-    // consulta para mostrar todos los albums por title
+    // consulta para mostrar todos los artistas por nacionalidad
     public void showArtistNationality(TableView tableView, String partialNat) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
 
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            String artistName = document.getString("nationality");
+            String nationality = document.getString("nationality");
 
             // Utilizar expresiones regulares para verificar si contiene las letras parciales
-            if (artistName != null && artistName.toLowerCase().matches(".*" + partialNat.toLowerCase() + ".*")) {
+            if (nationality != null && nationality.toLowerCase().matches(".*" + partialNat.toLowerCase() + ".*")) {
                 data.add(new Artist(document));
             }
         }
@@ -177,7 +196,9 @@ public class MongoOperations {
 
     // consulta para mostrar todos los albums por genero
     public void showAlbumsYear(TableView tableView, String name) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
@@ -191,7 +212,9 @@ public class MongoOperations {
 
     // enmascara en el tableView el año
     public void maskAlbum(TableView tableView) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
@@ -203,7 +226,9 @@ public class MongoOperations {
 
     // enmascara en el tableView la nacionalidad
     public void maskArtist(TableView tableView) {
-        FindIterable<Document> findIterable = collection.find();
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
         ObservableList<Artist> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
@@ -252,12 +277,6 @@ public class MongoOperations {
     }
 
 
-    // count all documents from to collection
-    public long countDocuments() {
-        // Contar documentos en la colección
-        return collection.countDocuments();
-    }
-
     // Revisa el ultimo ID y asignar ultimo +1
     public int asignaID() {
         int asignado;
@@ -282,7 +301,15 @@ public class MongoOperations {
     // verifica si existe por ID
     public Document exists(int idDoc) {
         try {
-            Document document = collection.find(new Document("_id", idDoc)).first();
+
+            Bson filter = Filters.and(
+                    Filters.eq("_id", idDoc),
+                    Filters.eq("logic_delete", 0)
+            );
+
+
+
+            Document document = collection.find(filter).first();
             return document;
         } catch (IllegalArgumentException e) {
             return null;
@@ -294,9 +321,12 @@ public class MongoOperations {
             Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
 
             // Crear una expresión regular para buscar parcialmente el nombre
-            Document document = collection.find(
-                    Filters.regex("title", partialName, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
-            ).collation(collation).first();
+            Bson filter = Filters.and(
+                    Filters.regex("title", partialName, "i"), // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+                    Filters.eq("logic_delete", 0)
+            );
+
+            Document document = collection.find(filter).collation(collation).first();
             System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
@@ -312,10 +342,13 @@ public class MongoOperations {
             Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
 
             // Crear una expresión regular para buscar parcialmente el nombre
-            Document document = collection.find(
-                    Filters.regex("name", partialName, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
-            ).collation(collation).first();
+            Bson filter = Filters.and(
+                    Filters.regex("name", partialName, "i"), // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+                    Filters.eq("logic_delete", 0)
+            );
 
+            Document document = collection.find(filter).collation(collation).first();
+            System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
 
@@ -328,7 +361,14 @@ public class MongoOperations {
         try {
             Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
 
-            Document document = collection.find(new Document("genre", genreDoc)).collation(collation).first();
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Bson filter = Filters.and(
+                    Filters.regex("genre", genreDoc, "i"),
+                    Filters.eq("logic_delete", 0)
+            );
+
+            Document document = collection.find(filter).collation(collation).first();
+            System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
             return null;
@@ -341,10 +381,12 @@ public class MongoOperations {
             Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
 
             // Crear una expresión regular para buscar parcialmente el nombre
-            Document document = collection.find(
-                    Filters.regex("nationality", partialNat, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
-            ).collation(collation).first();
+            Bson filter = Filters.and(
+                    Filters.regex("nationality", partialNat, "i"), // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+                    Filters.eq("logic_delete", 0)
+            );
 
+            Document document = collection.find(filter).collation(collation).first();
             System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
@@ -356,8 +398,15 @@ public class MongoOperations {
     // verifica si existe por year
     public Document existsForYear(String yearDoc) {
         try {
-            Document document = collection.find(new Document("year_release", yearDoc)).first();
-            return document;
+
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Bson filter = Filters.and(
+                    Filters.regex("year_release", yearDoc),
+                    Filters.eq("logic_delete", 0)
+            );
+
+            Document document = collection.find(filter).first();
+            System.out.println(document);            return document;
         } catch (IllegalArgumentException e) {
             return null;
         }

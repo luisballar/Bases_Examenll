@@ -122,7 +122,7 @@ public class AlbumWindow implements Initializable {
                     .append("title", nameField.getText().trim())
                     .append("genre", albumBox.getValue().trim())
                     .append("year_release", yearChoiceBox.getValue().trim())
-                    .append("logic_delete", "0");
+                    .append("logic_delete", 0);
 
             op.insertDocument(document);
 
@@ -131,6 +131,8 @@ public class AlbumWindow implements Initializable {
             configureTable();
             albumBox.setValue(null);
             yearChoiceBox.setValue(null);
+            logicDelete.setSelected(false);
+
 
 
         }else{
@@ -205,9 +207,9 @@ public class AlbumWindow implements Initializable {
 
             switch (option) {
                 case "ID":
-                    if (op.exists(Integer.parseInt(searchField.getText())) != null) {
+                    if (op.exists(Integer.parseInt(searchField.getText().trim())) != null) {
 
-                        op.fetchAndDisplayDataOneAlbum(tableView, op.exists(Integer.parseInt(searchField.getText()))); // mostrar el solicitado
+                        op.fetchAndDisplayDataOneAlbum(tableView, op.exists(Integer.parseInt(searchField.getText().trim()))); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -220,9 +222,9 @@ public class AlbumWindow implements Initializable {
                         break;
                     }
                 case "Nombre":
-                    if (op.existsAlbumForTitle(searchField.getText()) != null) {
+                    if (op.existsAlbumForTitle(searchField.getText().trim()) != null) {
 
-                        op.showAlbumsName(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showAlbumsName(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -235,9 +237,9 @@ public class AlbumWindow implements Initializable {
                         break;
                     }
                 case "Genero":
-                    if (op.existsForGenre(searchField.getText()) != null) {
+                    if (op.existsForGenre(searchField.getText().trim()) != null) {
 
-                        op.showAlbumsGenre(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showAlbumsGenre(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -251,9 +253,9 @@ public class AlbumWindow implements Initializable {
                     }
 
                 case "Año":
-                    if (op.existsForYear(searchField.getText()) != null) {
+                    if (op.existsForYear(searchField.getText().trim()) != null) {
 
-                        op.showAlbumsYear(tableView, searchField.getText()); // mostrar el solicitado
+                        op.showAlbumsYear(tableView, searchField.getText().trim()); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -311,7 +313,7 @@ public class AlbumWindow implements Initializable {
         if(selectedAlbum != null) {
             if (op.exists(selectedAlbum.getAlbumID()) != null) {
 
-                op.updateArtist(selectedAlbum.getAlbumID(), nameField.getText(), albumBox.getValue(), yearChoiceBox.getValue());
+                op.updateAlbum(selectedAlbum.getAlbumID(), nameField.getText(), albumBox.getValue(), yearChoiceBox.getValue());
 
 
             } else {
