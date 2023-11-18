@@ -25,7 +25,6 @@ public class Artist {
         this.name = new SimpleStringProperty(document.getString("name"));
         this.nationality = getNationality(document); // traer enmascarado
         this.genre = new SimpleStringProperty(document.getString("genre"));
-
     }
 
     public int getArtistID() {

@@ -155,6 +155,8 @@ public class MainWindow implements Initializable {
             albumBox.setValue(null);
             artisteBox.setValue(null);
             logicDelete.setSelected(false);
+            artisteBox.setDisable(false);
+            addButton.setDisable(false);
 
 
             op.fetchAndDisplayDataSong(tableView); // carga el tableView con los datos
@@ -175,9 +177,10 @@ public class MainWindow implements Initializable {
     }
 
     @FXML
-    void filterBox_action(ActionEvent event) {
-
+    public Object filterBox_action(ActionEvent event) {
+        return filterBox.getValue();
     }
+
 
     @FXML
     void logicDelete_clicked(ActionEvent event) {
@@ -186,15 +189,39 @@ public class MainWindow implements Initializable {
 
     @FXML
     void mask_button_clicked(ActionEvent event) {
+        if(mask_button.getText().equals("Enmascarar")){
+            mask_button.setText("Desenmascarar");
+
+            op.maskSong(tableView); // metodo que enmascara el album
+            configureTable(); // enmascara
+
+        }else if(mask_button.getText().equals("Desenmascarar")){
+            mask_button.setText("Enmascarar");
+            op.fetchAndDisplayDataSong(tableView); // carga el tableView con los datos
+            configureTable();
+
+        }
+    }
+
+    @FXML
+    void setMouseClicked(MouseEvent event) {
+        nameField.clear();
+        genreBox.setValue(null);
+        albumBox.setValue(null);
+        artisteBox.setValue(null);
+        artisteBox.setDisable(false);
+        addButton.setDisable(false);
+        tableView.getSelectionModel().clearSelection();
 
     }
 
     @FXML
     void onMouseClicked(MouseEvent event) {
+
         filterBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                op.fetchAndDisplayDataArtist(tableView);
+                op.fetchAndDisplayDataSong(tableView);
                 configureTable();
                 // Acción a realizar cuando cambia la selección
                 if (filterBox.getValue().equals("ID")) {
@@ -210,7 +237,75 @@ public class MainWindow implements Initializable {
 
     @FXML
     void searchButton_clicked(ActionEvent event) {
+        String option = (String) filterBox_action(event);
+        System.out.println(option);
 
+        if(!searchField.getText().isEmpty() && option != null) {
+
+            switch (option) {
+                case "ID":
+                    if (op.exists(Integer.parseInt(searchField.getText().trim())) != null) {
+
+                        op.fetchAndDisplayDataOneSong(tableView, op.exists(Integer.parseInt(searchField.getText().trim()))); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el ID solicitado");
+                        break;
+                    }
+                case "Titulo":
+                    if (op.existsAlbumForTitle(searchField.getText().trim()) != null) {
+
+                        op.showSongsName(tableView, searchField.getText().trim()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el Nombre solicitado");
+                        break;
+                    }
+                case "Genero":
+                    if (op.existsForGenre(searchField.getText().trim()) != null) {
+
+                        op.showSongsGenre(tableView, searchField.getText().trim()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el Género solicitado");
+                        break;
+                    }
+
+                case "Album":
+                    if (op.existsAlbumForTitle(searchField.getText().trim()) != null) {
+
+                        op.showSongAlbum(tableView, searchField.getText().trim()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el Año solicitado");
+                        break;
+                    }
+                case "Artista":
+                    if (op.existsForArtistNameInSong(searchField.getText().trim()) != null) {
+
+                        op.showSongArtist(tableView, searchField.getText().trim()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el Artista solicitado");
+                        break;
+                    }
+
+
+            }
+        }else {
+            op.fetchAndDisplayDataSong(tableView); // carga el tableView con los datos
+            configureTable();
+        }
     }
 
     @FXML
@@ -222,29 +317,23 @@ public class MainWindow implements Initializable {
 
 
             } else {
-                alertMessage = new Alert(Alert.AlertType.ERROR);
-                alertMessage.setTitle("Error al Eliminar");
-                alertMessage.setHeaderText(null);
-                alertMessage.setContentText("No existe ese ID");
-                alertMessage.show();
+                showAlert("Error al Eliminar","No existe ese ID");
             }
-
 
             nameField.clear();
             genreBox.setValue(null);
             albumBox.setValue(null);
             artisteBox.setValue(null);
             logicDelete.setSelected(false);
+            artisteBox.setDisable(false);
+            addButton.setDisable(false);
+
 
             op.fetchAndDisplayDataSong(tableView);
             configureTable();
 
         }else{
-            alertMessage = new Alert(Alert.AlertType.ERROR);
-            alertMessage.setTitle("Error al Actualizar");
-            alertMessage.setHeaderText(null);
-            alertMessage.setContentText("Debe seleccionar una Canción");
-            alertMessage.show();
+            showAlert("Error al Actualizar","Debe seleccionar una Canción");
         }
     }
 
@@ -284,10 +373,14 @@ public class MainWindow implements Initializable {
     void MouseClicked(MouseEvent event) {
 
         selectedSong = tableView.getSelectionModel().getSelectedItem();
+
         nameField.setText(selectedSong.getTitle());
         genreBox.getSelectionModel().select(selectedSong.getGenre());
         albumBox.getSelectionModel().select(selectedSong.getAlbum());
         artisteBox.getSelectionModel().select(selectedSong.getArtist());
+        artisteBox.setDisable(true);
+        addButton.setDisable(true);
+
 
     }
 
@@ -314,6 +407,15 @@ public class MainWindow implements Initializable {
         filterBox.getSelectionModel().selectFirst();
 
     }
+
+    private void showAlert(String title, String contentText) {
+        alertMessage = new Alert(Alert.AlertType.ERROR);
+        alertMessage.setTitle(title);
+        alertMessage.setHeaderText(null);
+        alertMessage.setContentText(contentText);
+        alertMessage.show();
+    }
+
 
     // inicializar los choiceBox
     @Override

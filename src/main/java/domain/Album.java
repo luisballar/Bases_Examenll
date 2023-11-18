@@ -11,12 +11,14 @@ public class Album {
     private SimpleStringProperty name;
     private SimpleStringProperty genre;
     private SimpleStringProperty year;
+    private SimpleStringProperty artist;
 
     public Album(Document document) {
         this.albumID = new SimpleIntegerProperty(document.getInteger("_id"));
         this.name = new SimpleStringProperty(document.getString("title"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
         this.year = new SimpleStringProperty(document.getString("year_release"));
+        this.artist = new SimpleStringProperty(document.getString("artist"));
     }
 
     public Album(Document document, String text) {
@@ -24,6 +26,8 @@ public class Album {
         this.name = new SimpleStringProperty(document.getString("title"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
         this.year = getYear(document);
+        this.artist = new SimpleStringProperty(document.getString("artist"));
+
     }
 
     public int getAlbumID() {
@@ -66,13 +70,24 @@ public class Album {
         return year.get();
     }
 
-
     public SimpleStringProperty yearProperty() {
         return year;
     }
 
     public void setYear(String year) {
         this.year.set(year);
+    }
+
+    public String getArtist() {
+        return artist.get();
+    }
+
+    public SimpleStringProperty artistProperty() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist.set(artist);
     }
 
     // return enmascaramiento

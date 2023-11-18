@@ -4,6 +4,7 @@ import com.mongodb.client.*;
 import data.MongoOperations;
 import domain.Album;
 import domain.Artist;
+import domain.Song;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -11,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -70,6 +72,12 @@ public class AlbumWindow implements Initializable {
     private TableColumn<Album, String> nameColumn;
 
     @FXML
+    private TableColumn<Album, String> artistColumn;
+
+    @FXML
+    private ChoiceBox<String> artistBox;
+
+    @FXML
     private TextField nameField;
 
     @FXML
@@ -98,7 +106,6 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     private TableColumn<Album, String> yearColumn;
-
     @FXML
     private TextField yearField;
     private FXMLLoader loader;
@@ -111,17 +118,20 @@ public class AlbumWindow implements Initializable {
     private ArtistWindow artistWindow;
     private Alert alertMessage;
     private Album selectedAlbum;
+    private boolean clickeado;
+
 
     // insert data
     @FXML
     void addButton_clcked(ActionEvent event) {
 
-        if(albumBox.getValue() != null && yearChoiceBox.getValue() != null && !nameField.getText().isEmpty()){
+        if(albumBox.getValue() != null && yearChoiceBox.getValue() != null && artistBox.getValue() != null && !nameField.getText().isEmpty()){
 
             Document document = new Document("_id", op.asignaID())
                     .append("title", nameField.getText().trim())
                     .append("genre", albumBox.getValue().trim())
                     .append("year_release", yearChoiceBox.getValue().trim())
+                    .append("artist", artistBox.getValue().trim())
                     .append("logic_delete", 0);
 
             op.insertDocument(document);
@@ -129,6 +139,7 @@ public class AlbumWindow implements Initializable {
             nameField.clear();
             albumBox.setValue(null);
             yearChoiceBox.setValue(null);
+            artistBox.setValue(null);
             logicDelete.setSelected(false);
 
             op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
@@ -158,6 +169,16 @@ public class AlbumWindow implements Initializable {
                 op.deleteDocuments(selectedAlbum.getAlbumID());
             }
 
+
+            nameField.clear();
+            albumBox.setValue(null);
+            yearChoiceBox.setValue(null);
+            artistBox.setValue(null);
+            logicDelete.setSelected(false);
+            artistBox.setDisable(true);
+            addButton.setDisable(false);
+
+
             op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
             configureTable();
 
@@ -168,15 +189,12 @@ public class AlbumWindow implements Initializable {
     }
 
 
-
-
     // close all
     @FXML
     void exitBut_clicked(ActionEvent event) {
         Platform.exit();
 
     }
-
 
     // ver que tiene seleccionado el filterBox
     @FXML
@@ -241,6 +259,17 @@ public class AlbumWindow implements Initializable {
                         showAlert("Error de Búsqueda","No se encontró el Año solicitado");
                         break;
                     }
+                case "Artista":
+                    if (op.existsForArtistNameInSong(searchField.getText().trim()) != null) {
+
+                        op.showArtistsOnAlbum(tableView, searchField.getText().trim()); // mostrar el solicitado
+                        configureTable();
+
+                        break;
+                    } else {
+                        showAlert("Error de Búsqueda","No se encontró el Artista solicitado");
+                        break;
+                    }
 
 
             }
@@ -272,14 +301,30 @@ public class AlbumWindow implements Initializable {
     // saber que fila esta siendo clicked
     @FXML
     void MouseClicked(MouseEvent event) {
-
-
         selectedAlbum = tableView.getSelectionModel().getSelectedItem();
+
         nameField.setText(selectedAlbum.getName());
         albumBox.getSelectionModel().select(selectedAlbum.getGenre());
         yearChoiceBox.getSelectionModel().select(selectedAlbum.getYear());
+        artistBox.getSelectionModel().select(selectedAlbum.getArtist());
+        artistBox.setDisable(true);
+        addButton.setDisable(true);
+
+    }
 
 
+    // cuando clickeo afuera del tableView
+    @FXML
+    void setMouseClicked(MouseEvent event) {
+        selectedAlbum = tableView.getSelectionModel().getSelectedItem();
+
+        nameField.clear();
+        albumBox.setValue(null);
+        yearChoiceBox.setValue(null);
+        artistBox.setValue(null);
+        artistBox.setDisable(false);
+        addButton.setDisable(false);
+        tableView.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -299,7 +344,6 @@ public class AlbumWindow implements Initializable {
 
                 op.updateAlbum(selectedAlbum.getAlbumID(), nameField.getText(), albumBox.getValue(), yearChoiceBox.getValue());
 
-
             } else {
 
                 showAlert("Error al Actualizar","No existe ese ID");
@@ -309,6 +353,10 @@ public class AlbumWindow implements Initializable {
             nameField.clear();
             albumBox.setValue(null);
             yearChoiceBox.setValue(null);
+            artistBox.setDisable(false);
+            addButton.setDisable(false);
+            artistBox.setValue(null);
+
 
             op.fetchAndDisplayDataAlbum(tableView);
             configureTable();
@@ -321,7 +369,7 @@ public class AlbumWindow implements Initializable {
         filterBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                op.fetchAndDisplayDataArtist(tableView);
+                op.fetchAndDisplayDataAlbum(tableView);
                 configureTable();
 
                 // Acción a realizar cuando cambia la selección
@@ -373,7 +421,7 @@ public class AlbumWindow implements Initializable {
         nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
         genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
         yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
-
+        artistColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().artistProperty());
     }
 
     public void setYears(){
@@ -400,7 +448,8 @@ public class AlbumWindow implements Initializable {
                 "ID",
                 "Nombre",
                 "Genero",
-                "Año"
+                "Año",
+                "Artista"
         };
 
         filterBox.getItems().addAll(filters);
@@ -419,6 +468,7 @@ public class AlbumWindow implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setYears();// set years on genreBox
+        artistBox.getItems().addAll(op.loadArtistsIntoChoiceBox());
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
 
@@ -427,7 +477,14 @@ public class AlbumWindow implements Initializable {
 
         setFiltersAlbum();
 
+        tableView.setOnMouseClicked(this::MouseClicked);
+
+
         op.fetchAndDisplayDataAlbum(tableView); // mostrar los datos de la colec en el tb
         configureTable();
+
+
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
     }
 }

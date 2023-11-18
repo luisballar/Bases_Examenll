@@ -139,6 +139,8 @@ public class ArtistWindow implements Initializable {
             configureTable();
             genreBox.setValue(null);
             nationalityBox.setValue(null);
+            addButton.setDisable(false);
+
 
         }else{
             showAlert("Error al Ingresar", "Debe ingresar todos los datos");
@@ -159,6 +161,7 @@ public class ArtistWindow implements Initializable {
             nationalityBox.setValue(null);
             genreBox.setValue(null);
             logicDelete.setSelected(false);
+            addButton.setDisable(false);
 
 
             op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
@@ -292,10 +295,22 @@ public class ArtistWindow implements Initializable {
             nameField.clear();
             nationalityBox.setValue(null);
             genreBox.setValue(null);
+            addButton.setDisable(false);
+
 
             op.fetchAndDisplayDataArtist(tableView);
             configureTable();
         }
+    }
+
+    @FXML
+    void setMouseClicked(MouseEvent event) {
+        nameField.clear();
+        genreBox.setValue(null);
+        nationalityBox.setValue(null);
+        tableView.getSelectionModel().clearSelection();
+        addButton.setDisable(false);
+
     }
 
     @FXML
@@ -356,6 +371,7 @@ public class ArtistWindow implements Initializable {
         nameField.setText(selecteArtist.getName());
         nationalityBox.getSelectionModel().select(selecteArtist.getNationality());
         genreBox.getSelectionModel().select(selecteArtist.getGenre());
+        addButton.setDisable(true);
 
     }
 

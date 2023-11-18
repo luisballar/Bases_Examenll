@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="field" prefHeight="574.0" prefWidth="1166.0" style="-fx-background-color: #34495E;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.ucr.paraiso.ie.bases_examenll.AlbumWindow">
+<AnchorPane fx:id="field" onMouseClicked="#setMouseClicked" prefHeight="574.0" prefWidth="1166.0" style="-fx-background-color: #34495E;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.ucr.paraiso.ie.bases_examenll.AlbumWindow">
     <children>
         <Button fx:id="deleteButton" layoutX="204.0" layoutY="428.0" mnemonicParsing="false" onAction="#deleteButton_clicked" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: #1C2833;" text="Eliminar" textFill="WHITE">
             <font>
@@ -26,18 +26,19 @@
             <font>
                 <Font name="System Bold" size="12.0" />
             </font></Button>
-        <TextField fx:id="nameField" layoutX="210.0" layoutY="74.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
+        <TextField fx:id="nameField" layoutX="210.0" layoutY="68.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
         <TableView fx:id="tableView" layoutX="434.0" layoutY="139.0" onMouseClicked="#MouseClicked" prefHeight="383.0" prefWidth="686.0">
             <columns>
                 <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
                 <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                 <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
                 <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Year" />
+            <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Artist" />
             </columns>
         </TableView>
-        <Label alignment="CENTER" layoutX="127.0" layoutY="78.0" prefHeight="16.0" prefWidth="75.0" text="Nombre" textFill="WHITE" />
-        <Label alignment="CENTER" layoutX="127.0" layoutY="125.0" prefHeight="16.0" prefWidth="75.0" text="Género" textFill="WHITE" />
-        <Label alignment="CENTER" layoutX="127.0" layoutY="180.0" prefHeight="16.0" prefWidth="75.0" text="Año" textFill="WHITE" />
+        <Label alignment="CENTER" layoutX="127.0" layoutY="72.0" prefHeight="16.0" prefWidth="75.0" text="Nombre" textFill="WHITE" />
+        <Label alignment="CENTER" layoutX="127.0" layoutY="119.0" prefHeight="16.0" prefWidth="75.0" text="Género" textFill="WHITE" />
+        <Label alignment="CENTER" layoutX="127.0" layoutY="174.0" prefHeight="16.0" prefWidth="75.0" text="Año" textFill="WHITE" />
         <CheckBox fx:id="logicDelete" layoutX="220.0" layoutY="524.0" mnemonicParsing="false" onAction="#logicDelete_clicked" text="Borrado Lógico" textFill="WHITE">
             <font>
                 <Font name="System Bold" size="12.0" />
@@ -82,7 +83,7 @@
                 </SplitPane>
             </children>
         </AnchorPane>
-        <ChoiceBox fx:id="albumBox" layoutX="208.0" layoutY="121.0" prefWidth="150.0" />
+        <ChoiceBox fx:id="albumBox" layoutX="208.0" layoutY="115.0" prefWidth="150.0" />
         <TextField fx:id="searchField" layoutX="434.0" layoutY="68.0" prefHeight="36.0" prefWidth="253.0" style="-fx-background-color: #1C2833; -fx-text-inner-color: white;" />
         <ComboBox fx:id="filterBox" layoutX="699.0" layoutY="68.0" onAction="#filterBox_action" onMouseClicked="#onMouseClicked" prefHeight="36.0" prefWidth="108.0" />
         <Button fx:id="searchButton" layoutX="852.0" layoutY="54.0" mnemonicParsing="false" onAction="#searchButton_clicked" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: #1C2833;" text="Buscar" textFill="WHITE">
@@ -90,6 +91,8 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="yearChoiceBox" layoutX="207.0" layoutY="176.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="yearChoiceBox" layoutX="207.0" layoutY="170.0" prefWidth="150.0" />
+      <Label alignment="CENTER" layoutX="127.0" layoutY="224.0" prefHeight="16.0" prefWidth="75.0" text="Artista" textFill="WHITE" />
+      <ChoiceBox fx:id="artistBox" layoutX="207.0" layoutY="220.0" prefWidth="150.0" />
     </children>
 </AnchorPane>

@@ -110,6 +110,17 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+    // muestra solo una cancion con el id ingresado
+    public void fetchAndDisplayDataOneSong(TableView tableView, Document doc) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+        ObservableList<Song> data = FXCollections.observableArrayList();
+
+        data.add(new Song(doc));
+
+        tableView.setItems(data);
+    }
+
     // consulta para mostrar todos los albums por title
     public void showAlbumsName(TableView tableView, String partialName) {
         Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
@@ -129,25 +140,6 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
-    // consulta para mostrar todos los albums por title
-    public void showArtistName(TableView tableView, String partialName) {
-        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
-        FindIterable<Document> findIterable = collection.find(filter);
-
-        ObservableList<Artist> data = FXCollections.observableArrayList();
-
-        for (Document document : findIterable) {
-            String artistName = document.getString("name");
-
-            // Utilizar expresiones regulares para verificar si contiene las letras parciales
-            if (artistName != null && artistName.toLowerCase().matches(".*" + partialName.toLowerCase() + ".*")) {
-                data.add(new Artist(document));
-            }
-        }
-
-        tableView.setItems(data);
-    }
-
     // consulta para mostrar todos los albums por genero
     public void showAlbumsGenre(TableView tableView, String partialGenre) {
         Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
@@ -161,6 +153,88 @@ public class MongoOperations {
             // Utilizar expresiones regulares para verificar si contiene las letras parciales
             if (albumGenre != null && albumGenre.toLowerCase().matches(".*" + partialGenre.toLowerCase() + ".*")) {
                 data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    // consulta para mostrar todos los albums por genero
+    public void showAlbumsYear(TableView tableView, String name) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("year_release").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    // consulta para mostrar todos los artistas de los albums
+    public void showArtistsOnAlbum(TableView tableView, String albumTitle) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            String albTitleFound = document.getString("artist");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (albTitleFound != null && albTitleFound.toLowerCase().matches(".*" + albumTitle.toLowerCase() + ".*")) {
+                data.add(new Album(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    // enmascara en el tableView el año
+    public void maskAlbum(TableView tableView) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Album> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Album(document, ""));
+        }
+
+        tableView.setItems(data);
+    }
+
+    // enmascara en el tableView el artista
+    public void maskSong(TableView tableView) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Song> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Song(document, ""));
+        }
+
+        tableView.setItems(data);
+    }
+
+    // consulta para mostrar todos los albums por title
+    public void showArtistName(TableView tableView, String partialName) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Artist> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            String artistName = document.getString("name");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistName != null && artistName.toLowerCase().matches(".*" + partialName.toLowerCase() + ".*")) {
+                data.add(new Artist(document));
             }
         }
 
@@ -205,33 +279,66 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
-
-
-    // consulta para mostrar todos los albums por genero
-    public void showAlbumsYear(TableView tableView, String name) {
+    public void showSongsName(TableView tableView, String partialName) {
         Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
         FindIterable<Document> findIterable = collection.find(filter);
 
-        ObservableList<Album> data = FXCollections.observableArrayList();
+        ObservableList<Song> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            if(document.getString("year_release").toLowerCase().equals(name.toLowerCase())) {
-                data.add(new Album(document));
+            String artistName = document.getString("title");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistName != null && artistName.toLowerCase().matches(".*" + partialName.toLowerCase() + ".*")) {
+                data.add(new Song(document));
             }
         }
 
         tableView.setItems(data);
     }
 
-    // enmascara en el tableView el año
-    public void maskAlbum(TableView tableView) {
+    public void showSongsGenre(TableView tableView, String partialGenre) {
         Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
         FindIterable<Document> findIterable = collection.find(filter);
 
-        ObservableList<Album> data = FXCollections.observableArrayList();
+        ObservableList<Song> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            data.add(new Album(document, ""));
+            String songName = document.getString("title");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (songName != null && songName.toLowerCase().matches(".*" + partialGenre.toLowerCase() + ".*")) {
+                data.add(new Song(document));
+            }
+        }
+
+    }
+
+    public void showSongAlbum(TableView tableView, String name) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Song> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("album").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Song(document));
+            }
+        }
+
+        tableView.setItems(data);
+    }
+
+    public void showSongArtist(TableView tableView, String name) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+
+        ObservableList<Song> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            if(document.getString("artist").toLowerCase().equals(name.toLowerCase())) {
+                data.add(new Song(document));
+            }
         }
 
         tableView.setItems(data);
@@ -289,7 +396,6 @@ public class MongoOperations {
 
     }
 
-
     // Revisa el ultimo ID y asignar ultimo +1
     public int asignaID() {
         int asignado;
@@ -320,8 +426,6 @@ public class MongoOperations {
                     Filters.eq("logic_delete", 0)
             );
 
-
-
             Document document = collection.find(filter).first();
             return document;
         } catch (IllegalArgumentException e) {
@@ -349,6 +453,9 @@ public class MongoOperations {
     }
 
 
+
+
+
     // verifica si existe por titulo
     public Document existsForArtistName(String partialName) {
         try {
@@ -357,6 +464,25 @@ public class MongoOperations {
             // Crear una expresión regular para buscar parcialmente el nombre
             Bson filter = Filters.and(
                     Filters.regex("name", partialName, "i"), // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+                    Filters.eq("logic_delete", 0)
+            );
+
+            Document document = collection.find(filter).collation(collation).first();
+            System.out.println(document);
+            return document;
+        } catch (IllegalArgumentException e) {
+
+            return null;
+        }
+    }
+
+    public Document existsForArtistNameInSong(String partialName) {
+        try {
+            Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
+
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Bson filter = Filters.and(
+                    Filters.regex("artist", partialName, "i"), // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
                     Filters.eq("logic_delete", 0)
             );
 
@@ -476,7 +602,6 @@ public class MongoOperations {
 
     }
 
-
     // cargar artistas en choiceBox
     public List<String> loadArtistsIntoChoiceBox() {
         MongoCollection<Document> artistCollection = database.getCollection("Artist");
@@ -495,6 +620,7 @@ public class MongoOperations {
         return artistas;
     }
 
+    // cargar albums en choiceBox
     public List<String> loadAlbumsIntoChoiceBox() {
         MongoCollection<Document> artistCollection = database.getCollection("Album");
 

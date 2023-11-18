@@ -26,8 +26,8 @@ public class Song {
         this.songID = new SimpleIntegerProperty(document.getInteger("_id"));
         this.title = new SimpleStringProperty(document.getString("title"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
-        this.album = getAlbum(document);
-        this.artist = new SimpleStringProperty(document.getString("artist"));
+        this.album = new SimpleStringProperty(document.getString("album"));
+        this.artist = getArtist(document);
     }
 
     public int getSongID() {
@@ -90,8 +90,8 @@ public class Song {
         this.artist.set(artist);
     }
 
-    public SimpleStringProperty getAlbum(Document doc) {
-        char[] enmask = new char[new String(doc.getString("album")).length()];
+    public SimpleStringProperty getArtist(Document doc) {
+        char[] enmask = new char[new String(doc.getString("artist")).length()];
         Arrays.fill(enmask, '*');
         return new SimpleStringProperty(String.valueOf(enmask));
     }
