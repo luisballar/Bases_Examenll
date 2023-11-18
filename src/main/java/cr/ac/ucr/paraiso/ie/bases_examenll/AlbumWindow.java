@@ -127,22 +127,16 @@ public class AlbumWindow implements Initializable {
             op.insertDocument(document);
 
             nameField.clear();
-            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
-            configureTable();
             albumBox.setValue(null);
             yearChoiceBox.setValue(null);
             logicDelete.setSelected(false);
 
+            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
+            configureTable();
 
 
         }else{
-
-            alertMessage = new Alert(Alert.AlertType.ERROR);
-            alertMessage.setTitle("Error al Ingresar");
-            alertMessage.setHeaderText(null);
-            alertMessage.setContentText("Debe ingresar todos los datos");
-            alertMessage.show();
-
+            showAlert("Error al Ingresar","Debe ingresar todos los datos");
         }
 
     }
@@ -168,11 +162,7 @@ public class AlbumWindow implements Initializable {
             configureTable();
 
         }else {
-            alertMessage = new Alert(Alert.AlertType.ERROR);
-            alertMessage.setTitle("Error al Eliminar");
-            alertMessage.setHeaderText(null);
-            alertMessage.setContentText("Seleccion un Album a eliminar");
-            alertMessage.show();
+            showAlert("Error al Eliminar","Seleccion un Album a eliminar");
         }
 
     }
@@ -214,11 +204,7 @@ public class AlbumWindow implements Initializable {
 
                         break;
                     } else {
-                        alertMessage = new Alert(Alert.AlertType.ERROR);
-                        alertMessage.setTitle("Error de Búsqueda");
-                        alertMessage.setHeaderText(null);
-                        alertMessage.setContentText("No se encontró el ID solicitado");
-                        alertMessage.show();
+                        showAlert("Error de Búsqueda","No se encontró el ID solicitado");
                         break;
                     }
                 case "Nombre":
@@ -229,11 +215,7 @@ public class AlbumWindow implements Initializable {
 
                         break;
                     } else {
-                        alertMessage = new Alert(Alert.AlertType.ERROR);
-                        alertMessage.setTitle("Error de Búsqueda");
-                        alertMessage.setHeaderText(null);
-                        alertMessage.setContentText("No se encontró el Nombre solicitado");
-                        alertMessage.show();
+                        showAlert("Error de Búsqueda","No se encontró el Nombre solicitado");
                         break;
                     }
                 case "Genero":
@@ -244,11 +226,7 @@ public class AlbumWindow implements Initializable {
 
                         break;
                     } else {
-                        alertMessage = new Alert(Alert.AlertType.ERROR);
-                        alertMessage.setTitle("Error de Búsqueda");
-                        alertMessage.setHeaderText(null);
-                        alertMessage.setContentText("No se encontró el Genero solicitado");
-                        alertMessage.show();
+                        showAlert("Error de Búsqueda","No se encontró el Género solicitado");
                         break;
                     }
 
@@ -260,11 +238,7 @@ public class AlbumWindow implements Initializable {
 
                         break;
                     } else {
-                        alertMessage = new Alert(Alert.AlertType.ERROR);
-                        alertMessage.setTitle("Error de Búsqueda");
-                        alertMessage.setHeaderText(null);
-                        alertMessage.setContentText("No se encontró el Año solicitado");
-                        alertMessage.show();
+                        showAlert("Error de Búsqueda","No se encontró el Año solicitado");
                         break;
                     }
 
@@ -310,18 +284,26 @@ public class AlbumWindow implements Initializable {
 
     @FXML
     void updateButton_clicked(ActionEvent event) {
-        if(selectedAlbum != null) {
+
+        if(selectedAlbum == null) {
+
+            showAlert("Error al Actualizar","Debe seleccionar un Album");
+
+
+        }else if(nameField.getText().isEmpty()) {
+
+            showAlert("Error al Actualizar","No deben haber espacios en blanco");
+
+        }else if(selectedAlbum != null){
             if (op.exists(selectedAlbum.getAlbumID()) != null) {
 
                 op.updateAlbum(selectedAlbum.getAlbumID(), nameField.getText(), albumBox.getValue(), yearChoiceBox.getValue());
 
 
             } else {
-                alertMessage = new Alert(Alert.AlertType.ERROR);
-                alertMessage.setTitle("Error al Eliminar");
-                alertMessage.setHeaderText(null);
-                alertMessage.setContentText("No existe ese ID");
-                alertMessage.show();
+
+                showAlert("Error al Actualizar","No existe ese ID");
+
             }
 
             nameField.clear();
@@ -330,21 +312,18 @@ public class AlbumWindow implements Initializable {
 
             op.fetchAndDisplayDataAlbum(tableView);
             configureTable();
-
-        }else{
-            alertMessage = new Alert(Alert.AlertType.ERROR);
-            alertMessage.setTitle("Error al Actualizar");
-            alertMessage.setHeaderText(null);
-            alertMessage.setContentText("Debe seleccionar un Album");
-            alertMessage.show();
         }
     }
 
+    // observar que esta seleccionando el filterBox
     @FXML
     void onMouseClicked(MouseEvent event) {
         filterBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                op.fetchAndDisplayDataArtist(tableView);
+                configureTable();
+
                 // Acción a realizar cuando cambia la selección
                 if (filterBox.getValue().equals("ID")) {
                     searchField.setTextFormatter(MethodsInit.getInstance().onlyNumber()); // solo admite numeros
@@ -397,25 +376,23 @@ public class AlbumWindow implements Initializable {
 
     }
 
-
     public void setYears(){
 
         String[] yearsArray = {
-                "1948", "1949", "1950", "1951", "1952", "1953", "1954", "1955", "1956", "1957",
-                "1958", "1959", "1960", "1961", "1962", "1963", "1964", "1965", "1966", "1967",
-                "1968", "1969", "1970", "1971", "1972", "1973", "1974", "1975", "1976", "1977",
-                "1978", "1979", "1980", "1981", "1982", "1983", "1984", "1985", "1986", "1987",
-                "1988", "1989", "1990", "1991", "1992", "1993", "1994", "1995", "1996", "1997",
-                "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007",
-                "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017",
-                "2018", "2019", "2020", "2021", "2022", "2023"
+                "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014",
+                "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004",
+                "2003", "2002", "2001", "2000", "1999", "1998", "1997", "1996", "1995", "1994",
+                "1993", "1992", "1991", "1990", "1989", "1988", "1987", "1986", "1985", "1984",
+                "1983", "1982", "1981", "1980", "1979", "1978", "1977", "1976", "1975", "1974",
+                "1973", "1972", "1971", "1970", "1969", "1968", "1967", "1966", "1965", "1964",
+                "1963", "1962", "1961", "1960", "1959", "1958", "1957", "1956", "1955", "1954",
+                "1953", "1952", "1951", "1950", "1949", "1948"
         };
 
         yearChoiceBox.getItems().addAll(yearsArray);
 
 
     }
-
 
 
     public void setFiltersAlbum(){
@@ -431,8 +408,13 @@ public class AlbumWindow implements Initializable {
 
     }
 
-
-
+    private void showAlert(String title, String contentText) {
+        alertMessage = new Alert(Alert.AlertType.ERROR);
+        alertMessage.setTitle(title);
+        alertMessage.setHeaderText(null);
+        alertMessage.setContentText(contentText);
+        alertMessage.show();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -443,11 +425,9 @@ public class AlbumWindow implements Initializable {
         searchField.setTextFormatter((new TextFormatter<>(MethodsInit.getInstance().validateSpacesAndNumbers()))); // solo admite numeros
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
 
-
-        op.fetchAndDisplayDataAlbum(tableView); // mostrar los datos de la colec en el tb
-
-        configureTable();
         setFiltersAlbum();
 
+        op.fetchAndDisplayDataAlbum(tableView); // mostrar los datos de la colec en el tb
+        configureTable();
     }
 }

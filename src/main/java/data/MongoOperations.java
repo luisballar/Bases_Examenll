@@ -11,6 +11,7 @@ import domain.Artist;
 import domain.Song;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -72,6 +73,18 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
+    // consulta para mostrar en el tableView Artistas
+    public void fetchAndDisplayDataSong(TableView tableView) {
+        Bson filter = Filters.eq("logic_delete", 0); // valida que solo muestre los que no se han borrado
+        FindIterable<Document> findIterable = collection.find(filter);
+        ObservableList<Song> data = FXCollections.observableArrayList();
+
+        for (Document document : findIterable) {
+            data.add(new Song(document));
+        }
+
+        tableView.setItems(data);
+    }
 
 
     // muestra solo un album con el id ingresado
@@ -444,6 +457,59 @@ public class MongoOperations {
         collection.updateOne(filter,doc); // actualiza el documento solicitado
         System.out.println("Documento Actualizado");
 
+    }
+
+    public void updateSong(int idField, String title, String genre, String album, String artist) {
+        // crear un filtro para especificar los documentos que deseas borrar
+
+        Bson filter = Filters.eq("_id",idField); // identifica el documento
+
+        Bson doc = Updates.combine(
+                Updates.set("title", title),
+                Updates.set("genre", genre),
+                Updates.set("album", album),
+                Updates.set("artist", artist)
+        );
+
+        collection.updateOne(filter,doc); // actualiza el documento solicitado
+        System.out.println("Documento Actualizado");
+
+    }
+
+
+    // cargar artistas en choiceBox
+    public List<String> loadArtistsIntoChoiceBox() {
+        MongoCollection<Document> artistCollection = database.getCollection("Artist");
+
+        // Realizar una consulta para obtener los nombres de los artistas
+        FindIterable<Document> artists = artistCollection.find(Filters.eq("logic_delete",0));
+        List<String> artistas = new ArrayList<>();
+
+        for (Document artist : artists) {
+            // Suponiendo que el nombre del artista está en el campo "name"
+            String artistName = artist.getString("name");
+            System.out.println(artistName);
+            artistas.add(artistName);
+        }
+
+        return artistas;
+    }
+
+    public List<String> loadAlbumsIntoChoiceBox() {
+        MongoCollection<Document> artistCollection = database.getCollection("Album");
+
+        // Realizar una consulta para obtener los nombres de los artistas
+        FindIterable<Document> artists = artistCollection.find(Filters.eq("logic_delete",0));
+        List<String> artistas = new ArrayList<>();
+
+        for (Document artist : artists) {
+            // Suponiendo que el nombre del artista está en el campo "name"
+            String artistName = artist.getString("title");
+            System.out.println(artistName);
+            artistas.add(artistName);
+        }
+
+        return artistas;
     }
 
 

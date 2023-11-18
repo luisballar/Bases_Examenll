@@ -1,84 +1,109 @@
 package domain;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import org.bson.Document;
+
+import java.util.Arrays;
+
 public class Song {
 
-    private int muiscID;
-    private String title;
-    private String artist;
-    private String genre;
-    private String album;
+    private SimpleIntegerProperty songID;
+    private SimpleStringProperty title;
+    private SimpleStringProperty genre;
+    private SimpleStringProperty album;
+    private SimpleStringProperty artist;
 
-    private String year;
-
-    public Song() {
+    public Song(Document document) {
+        this.songID = new SimpleIntegerProperty(document.getInteger("_id"));
+        this.title = new SimpleStringProperty(document.getString("title"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
+        this.album = new SimpleStringProperty(document.getString("album"));
+        this.artist = new SimpleStringProperty(document.getString("artist"));
     }
 
-    public Song(int muiscID, String title, String artist, String genre, String album, String year) {
-        this.muiscID = muiscID;
-        this.title = title;
-        this.artist = artist;
-        this.genre = genre;
-        this.album = album;
-        this.year = year;
+    public Song(Document document, String text) {
+        this.songID = new SimpleIntegerProperty(document.getInteger("_id"));
+        this.title = new SimpleStringProperty(document.getString("title"));
+        this.genre = new SimpleStringProperty(document.getString("genre"));
+        this.album = getAlbum(document);
+        this.artist = new SimpleStringProperty(document.getString("artist"));
     }
 
-    public int getMuiscID() {
-        return muiscID;
+    public int getSongID() {
+        return songID.get();
     }
 
-    public void setMuiscID(int muiscID) {
-        this.muiscID = muiscID;
+    public SimpleIntegerProperty songIDProperty() {
+        return songID;
+    }
+
+    public void setSongID(int songID) {
+        this.songID.set(songID);
     }
 
     public String getTitle() {
+        return title.get();
+    }
+
+    public SimpleStringProperty titleProperty() {
         return title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getArtist() {
-        return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
+        this.title.set(title);
     }
 
     public String getGenre() {
+        return genre.get();
+    }
+
+    public SimpleStringProperty genreProperty() {
         return genre;
     }
 
     public void setGenre(String genre) {
-        this.genre = genre;
+        this.genre.set(genre);
     }
 
     public String getAlbum() {
+        return album.get();
+    }
+
+    public SimpleStringProperty albumProperty() {
         return album;
     }
 
     public void setAlbum(String album) {
-        this.album = album;
+        this.album.set(album);
     }
 
-    public String getYear() {
-        return year;
+    public String getArtist() {
+        return artist.get();
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public SimpleStringProperty artistProperty() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist.set(artist);
+    }
+
+    public SimpleStringProperty getAlbum(Document doc) {
+        char[] enmask = new char[new String(doc.getString("album")).length()];
+        Arrays.fill(enmask, '*');
+        return new SimpleStringProperty(String.valueOf(enmask));
     }
 
     @Override
     public String toString() {
         return "Song{" +
-                "muiscID=" + muiscID +
-                ", title='" + title + '\'' +
-                ", artist='" + artist + '\'' +
-                ", genre='" + genre + '\'' +
-                ", album='" + album + '\'' +
-                ", year='" + year + '\'' +
+                "muiscID=" + songID +
+                ", title=" + title +
+                ", genre=" + genre +
+                ", album=" + album +
+                ", artist=" + artist +
                 '}';
     }
 }
