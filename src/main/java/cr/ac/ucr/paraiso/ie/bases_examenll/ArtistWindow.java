@@ -6,6 +6,10 @@ import data.MongoOperations;
 import domain.Album;
 import domain.Artist;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -153,9 +157,9 @@ public class ArtistWindow implements Initializable {
         if(selecteArtist != null) {
             //valida si se trata de borrado logico o fisico
             if (logicDelete.isSelected()) {
-                op.logicDelete(searchField.getText());
+                op.logicDelete(selecteArtist.getArtistID());
             } else {
-                op.deleteDocuments("_id", selecteArtist.getArtistID());
+                op.deleteDocuments(selecteArtist.getArtistID());
             }
 
             op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
@@ -196,7 +200,7 @@ public class ArtistWindow implements Initializable {
 
         }else if(mask_button.getText().equals("Desenmascarar")){
             mask_button.setText("Enmascarar");
-            op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
+            op.fetchAndDisplayDataArtist(tableView); // carga el tableView con los datos
             configureTable();
 
         }
@@ -211,9 +215,9 @@ public class ArtistWindow implements Initializable {
 
             switch (option) {
                 case "ID":
-                    if (op.exists(searchField.getText()) != null) {
+                    if (op.exists(Integer.parseInt(searchField.getText())) != null) {
 
-                        op.fetchAndDisplayDataOneArtist(tableView, op.exists(searchField.getText())); // mostrar el solicitado
+                        op.fetchAndDisplayDataOneArtist(tableView, op.exists(Integer.parseInt(searchField.getText()))); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -314,6 +318,23 @@ public class ArtistWindow implements Initializable {
                 "mainWindow.fxml");
     }
 
+    // filterChoiceBox
+    @FXML
+    void onMouseClicked(MouseEvent event) {
+        filterBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    // Acción a realizar cuando cambia la selección
+                    if (filterBox.getValue().equals("ID")) {
+                        searchField.setTextFormatter(MethodsInit.getInstance().onlyNumber()); // solo admite numeros
+                    } else {
+                        searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // solo admite numeros
+                    }
+                    searchField.clear();
+                }
+            });
+
+    }
 
     @FXML
     void MouseClicked(MouseEvent event) {
@@ -324,89 +345,85 @@ public class ArtistWindow implements Initializable {
     }
 
     public void setNationality(){
-
         String[] nationalities = {
-                "Estadounidense",
-                "Canadiense",
-                "Británico",
-                "Alemán",
-                "Francés",
-                "Italiano",
-                "Chino",
-                "Japonés",
-                "Brasileño",
-                "Argentino",
-                "Mexicano",
-                "Indio",
-                "Australiano",
-                "Sudafricano",
-                "Nigeriano",
-                "Egipcio",
-                "Ruso",
-                "Turco",
-                "Iraní",
-                "Saudita",
-                "Surcoreano",
-                "Indonesio",
-                "Neozelandés",
-                "Marroquí",
-                "Keniano",
-                "Chileno",
-                "Peruano",
-                "Colombiano",
-                "Venezolano",
-                "Español",
-                "Portugués",
-                "Griego",
-                "Noruego",
-                "Sueco",
-                "Finlandés",
-                "Danés",
-                "Suizo",
-                "Austríaco",
-                "Holandés",
-                "Belga",
-                "Luxemburgués",
-                "Irlandés",
-                "Polaco",
-                "Húngaro",
-                "Checo",
-                "Eslovaco",
-                "Rumano",
-                "Búlgaro",
-                "Croata",
-                "Serbio",
-                "Montenegrino",
-                "Bosnio",
-                "Macedonio",
-                "Albanés",
-                "Kosovar",
-                "Esloveno",
-                "Estonio",
-                "Letón",
-                "Lituano",
-                "Bielorruso",
-                "Ucraniano",
-                "Georgiano",
-                "Armenio",
-                "Azerí",
-                "Kazajo",
-                "Uzbeko",
-                "Turcomano",
-                "Kirguís",
-                "Tayiko",
-                "Mongol",
-                "Norteamericano",
-                "Sudamericano",
-                "Europeo",
-                "Asiático",
                 "Africano",
-                "Oceaniano",
+                "Albanés",
+                "Alemán",
+                "Antártico",
+                "Armenio",
+                "Asiático",
+                "Australiano",
+                "Austríaco",
+                "Azerí",
+                "Belga",
+                "Bielorruso",
+                "Bosnio",
+                "Brasileño",
+                "Británico",
+                "Búlgaro",
+                "Canadiense",
                 "Caribeño",
                 "Centroamericano",
-                "Sudamericano",
-                "Norteamericano",
-                "Antártico"
+                "Checo",
+                "Chileno",
+                "Chino",
+                "Colombiano",
+                "Costarricense",
+                "Croata",
+                "Danés",
+                "Egipcio",
+                "Eslovaco",
+                "Esloveno",
+                "Español",
+                "Estadounidense",
+                "Estonio",
+                "Europeo",
+                "Finlandés",
+                "Francés",
+                "Georgiano",
+                "Griego",
+                "Holandés",
+                "Húngaro",
+                "Indio",
+                "Indonesio",
+                "Iraní",
+                "Irlandés",
+                "Italiano",
+                "Japonés",
+                "Kazajo",
+                "Keniano",
+                "Kirguís",
+                "Kosovar",
+                "Letón",
+                "Lituano",
+                "Luxemburgués",
+                "Macedonio",
+                "Marroquí",
+                "Mexicano",
+                "Mongol",
+                "Montenegrino",
+                "Neozelandés",
+                "Nigeriano",
+                "Noruego",
+                "Oceaniano",
+                "Peruano",
+                "Polaco",
+                "Portugués",
+                "Rumano",
+                "Ruso",
+                "Saudita",
+                "Serbio",
+                "Sudafricano",
+                "Sueco",
+                "Sudcoreano",
+                "Suizo",
+                "Surcoreano",
+                "Tayiko",
+                "Turco",
+                "Turcomano",
+                "Ucraniano",
+                "Uzbeko",
+                "Venezolano"
         };
 
         nationalityBox.getItems().addAll(nationalities);
@@ -414,7 +431,8 @@ public class ArtistWindow implements Initializable {
     }
 
     private void configureTable(){
-        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().artistIDProperty());
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) ->
+                new SimpleStringProperty(Integer.toString(data.getValue().artistIDProperty().get())));
         nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().nameProperty());
         nationalityColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().nationalityProperty());
         genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Artist, String> data) -> data.getValue().genreProperty());
@@ -443,7 +461,7 @@ public class ArtistWindow implements Initializable {
         setFiltersAlbum(); // set filters on filterBox
 
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
-        searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
+        searchField.setTextFormatter(MethodsInit.getInstance().onlyNumber()); // solo admite numeros
 
 
         op.fetchAndDisplayDataArtist(tableView);

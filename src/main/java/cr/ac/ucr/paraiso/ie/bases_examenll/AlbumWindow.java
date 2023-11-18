@@ -3,8 +3,10 @@ package cr.ac.ucr.paraiso.ie.bases_examenll;
 import com.mongodb.client.*;
 import data.MongoOperations;
 import domain.Album;
+import domain.Artist;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -143,15 +145,21 @@ public class AlbumWindow implements Initializable {
 
     }
 
+
+    @FXML
+    void MouseClickeFilterBox(MouseEvent event) {
+
+    }
+
     @FXML
     void deleteButton_clicked(ActionEvent event) {
 
         if(selectedAlbum != null) {
             //valida si se trata de borrado logico o fisico
             if (logicDelete.isSelected()) {
-                op.logicDelete(searchField.getText());
+                op.logicDelete(selectedAlbum.getAlbumID());
             } else {
-                op.deleteDocuments("_id", selectedAlbum.getAlbumID());
+                op.deleteDocuments(selectedAlbum.getAlbumID());
             }
 
             op.fetchAndDisplayDataAlbum(tableView); // carga el tableView con los datos
@@ -166,6 +174,9 @@ public class AlbumWindow implements Initializable {
         }
 
     }
+
+
+
 
     // close all
     @FXML
@@ -194,9 +205,9 @@ public class AlbumWindow implements Initializable {
 
             switch (option) {
                 case "ID":
-                    if (op.exists(searchField.getText()) != null) {
+                    if (op.exists(Integer.parseInt(searchField.getText())) != null) {
 
-                        op.fetchAndDisplayDataOneAlbum(tableView, op.exists(searchField.getText())); // mostrar el solicitado
+                        op.fetchAndDisplayDataOneAlbum(tableView, op.exists(Integer.parseInt(searchField.getText()))); // mostrar el solicitado
                         configureTable();
 
                         break;
@@ -209,7 +220,7 @@ public class AlbumWindow implements Initializable {
                         break;
                     }
                 case "Nombre":
-                    if (op.existsForTitle(searchField.getText()) != null) {
+                    if (op.existsAlbumForTitle(searchField.getText()) != null) {
 
                         op.showAlbumsName(tableView, searchField.getText()); // mostrar el solicitado
                         configureTable();
@@ -299,7 +310,22 @@ public class AlbumWindow implements Initializable {
 
     }
 
+    @FXML
+    void onMouseClicked(MouseEvent event) {
+        filterBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Acción a realizar cuando cambia la selección
+                if (filterBox.getValue().equals("ID")) {
+                    searchField.setTextFormatter(MethodsInit.getInstance().onlyNumber()); // solo admite numeros
+                } else {
+                    searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // solo admite numeros
+                }
+                searchField.clear();
+            }
+        });
 
+    }
 
     @FXML
     void viewArtistBut_clicked(ActionEvent event) throws IOException {
@@ -333,7 +359,8 @@ public class AlbumWindow implements Initializable {
 
     // configure tableview
     private void configureTable(){
-        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().albumIDProperty());
+        idColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) ->
+                new SimpleStringProperty(Integer.toString(data.getValue().albumIDProperty().get())));
         nameColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().nameProperty());
         genreColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().genreProperty());
         yearColumn.setCellValueFactory((TableColumn.CellDataFeatures<Album, String> data) -> data.getValue().yearProperty());
@@ -359,6 +386,8 @@ public class AlbumWindow implements Initializable {
 
     }
 
+
+
     public void setFiltersAlbum(){
         String[] filters = {
                 "ID",
@@ -372,14 +401,18 @@ public class AlbumWindow implements Initializable {
 
     }
 
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setYears();// set years on genreBox
         MethodsInit.getInstance().setGenres(albumBox); // set genres on genreBox
         MethodsInit.getInstance().disable(viewAlbumBut);
 
+        searchField.setTextFormatter((new TextFormatter<>(MethodsInit.getInstance().validateSpacesAndNumbers()))); // solo admite numeros
         nameField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
-        searchField.setTextFormatter(new TextFormatter<>(MethodsInit.getInstance().validateBlankSpaces())); // no permite espacios en blanco
+
 
         op.fetchAndDisplayDataAlbum(tableView); // mostrar los datos de la colec en el tb
 

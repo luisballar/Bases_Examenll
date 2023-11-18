@@ -3,10 +3,7 @@ package data;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Collation;
-import com.mongodb.client.model.CollationStrength;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import domain.Album;
 import domain.Artist;
@@ -20,6 +17,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.*;
+
+import static com.mongodb.client.model.Indexes.descending;
 
 public class MongoOperations {
     private MongoClient mongoClient;
@@ -70,6 +69,7 @@ public class MongoOperations {
     }
 
 
+
     // muestra solo un album con el id ingresado
     public void fetchAndDisplayDataOneAlbum(TableView tableView, Document doc) {
         ObservableList<Album> data = FXCollections.observableArrayList();
@@ -89,21 +89,23 @@ public class MongoOperations {
         tableView.setItems(data);
     }
 
-
     // consulta para mostrar todos los albums por title
-    public void showAlbumsName(TableView tableView, String name) {
+    public void showAlbumsName(TableView tableView, String partialName) {
         FindIterable<Document> findIterable = collection.find();
+
         ObservableList<Album> data = FXCollections.observableArrayList();
 
         for (Document document : findIterable) {
-            if(document.getString("title").toLowerCase().equals(name.toLowerCase())) {
+            String artistName = document.getString("title");
+
+            // Utilizar expresiones regulares para verificar si contiene las letras parciales
+            if (artistName != null && artistName.toLowerCase().matches(".*" + partialName.toLowerCase() + ".*")) {
                 data.add(new Album(document));
             }
         }
 
         tableView.setItems(data);
     }
-
 
     // consulta para mostrar todos los albums por title
     public void showArtistName(TableView tableView, String partialName) {
@@ -122,8 +124,6 @@ public class MongoOperations {
 
         tableView.setItems(data);
     }
-
-
 
     // consulta para mostrar todos los albums por genero
     public void showAlbumsGenre(TableView tableView, String name) {
@@ -220,33 +220,17 @@ public class MongoOperations {
     }
 
     // delete docs
-    public void deleteDocuments(String idField, String value) {
+    public void deleteDocuments(int idField) {
         // crear un filtro para especificar los documentos que deseas borrar
-        Document filter = new Document(idField, value);
 
         // borrar múltiples documentos que coinciden con el filtro
-        DeleteResult deleteResult = collection.deleteOne(filter);
+        DeleteResult deleteResult = collection.deleteOne(Filters.eq("_id",idField));
 
         // imprimir la cantidad de documentos eliminados
         System.out.println("Documentos eliminados: " + deleteResult.getDeletedCount());
     }
 
-    // show consults
-    public void imprimir(){
-        Document document = null;
-        if(session.hasActiveTransaction() == true ){
-            FindIterable<Document> findIterable = collection.find();
-            Iterator<Document> iterator = findIterable.iterator();
-            while(iterator.hasNext()){
-                document = iterator.next();
-                System.out.println(document);
-                //session.close();
-            }
-        }else
-            System.out.println("Error de Sesión");
-    }
-
-    public void logicDelete(String docID){
+    public void logicDelete(int docID){
 
         if(session.hasActiveTransaction() == true){
             // Filtrar el documento que deseas actualizar
@@ -273,26 +257,28 @@ public class MongoOperations {
     }
 
     // Revisa el ultimo ID y asignar ultimo +1
-    public String asignaID() {
-        String asignado;
-        long asginadoSuma = 0;
+    public int asignaID() {
+        int asignado;
+        int asginadoSuma = 0;
 
-        // Obtener el último documento ordenando por _id de manera descendente
-        Document lastDocument = collection.find().sort(new Document("_id", -1)).first();
+        FindIterable<Document> sortedDocuments = collection.find().sort(Sorts.descending("_id")).limit(1);
+
+        Document lastDocument = sortedDocuments.first();
+
 
         if (lastDocument != null) {
             // Obtener el valor del último _id y sumar 1
-            asignado = lastDocument.getString("_id");
-            asginadoSuma = Long.parseLong(asignado) + 1;
+            asignado = lastDocument.getInteger("_id");
+            asginadoSuma = asignado + 1;
         } else {
-            return "1";
+            return 1;
         }
 
-        return Long.toString(asginadoSuma);
+        return asginadoSuma;
     }
 
     // verifica si existe por ID
-    public Document exists(String idDoc) {
+    public Document exists(int idDoc) {
         try {
             Document document = collection.find(new Document("_id", idDoc)).first();
             return document;
@@ -301,17 +287,22 @@ public class MongoOperations {
         }
     }
 
-    // verifica si existe por titulo
-    public Document existsForTitle(String titleDoc) {
+    public Document existsAlbumForTitle(String partialName) {
         try {
             Collation collation = Collation.builder().locale("en").collationStrength(CollationStrength.SECONDARY).build();
 
-            Document document = collection.find(new Document("title", titleDoc)).collation(collation).first(); // standard para ignorar minusculas
+            // Crear una expresión regular para buscar parcialmente el nombre
+            Document document = collection.find(
+                    Filters.regex("title", partialName, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
+            ).collation(collation).first();
+            System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
+
             return null;
         }
     }
+
 
     // verifica si existe por titulo
     public Document existsForArtistName(String partialName) {
@@ -323,7 +314,6 @@ public class MongoOperations {
                     Filters.regex("name", partialName, "i") // "i" para hacer la búsqueda insensible a mayúsculas y minúsculas
             ).collation(collation).first();
 
-            System.out.println(document);
             return document;
         } catch (IllegalArgumentException e) {
 

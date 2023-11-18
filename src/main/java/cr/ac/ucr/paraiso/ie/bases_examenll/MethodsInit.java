@@ -37,52 +37,50 @@ public class MethodsInit {
     public void setGenres(ChoiceBox<String> genreBox){
 
         String[] genres = {
-                "Rock",
-                "Pop",
-                "Hip-hop",
-                "Jazz",
-                "Electrónica",
+                "Ambient",
+                "Bachata",
+                "Blues",
+                "Bluegrass",
+                "Chillout",
                 "Clásica",
                 "Country",
-                "Reggae",
-                "Reggaeton",
-                "Blues",
-                "Metal",
-                "Rap",
-                "Indie",
-                "Folk",
-                "Punk",
-                "Soul",
-                "R&B",
-                "Funk",
-                "Disco",
-                "Gospel",
-                "Ska",
-                "Experimental",
-                "World",
-                "Ambient",
-                "Dubstep",
-                "Trap",
-                "Reguetón",
                 "Cumbia",
-                "Salsa",
-                "Merengue",
-                "Bachata",
+                "Disco",
+                "Dubstep",
+                "Electrónica",
+                "Experimental",
                 "Flamenco",
-                "Tango",
+                "Folk",
+                "Funk",
                 "Fusion",
-                "Chillout",
-                "Synthwave",
+                "Gospel",
                 "Grime",
+                "Grunge",
+                "Hard Rock",
+                "Hip-hop",
+                "Indie",
+                "Jazz",
+                "Metal",
+                "Merengue",
                 "Nu Metal",
                 "Opera",
-                "Hard Rock",
-                "Bluegrass",
-                "Grunge",
+                "Punk",
+                "R&B",
+                "Rap",
+                "Reggae",
+                "Reguetón",
+                "Rock",
+                "Salsa",
                 "Samba",
-                "Techno"
-
+                "Ska",
+                "Soul",
+                "Synthwave",
+                "Tango",
+                "Techno",
+                "Trap",
+                "World"
         };
+
         genreBox.getItems().addAll(genres);
 
     }
@@ -99,6 +97,36 @@ public class MethodsInit {
             }
 
             return null; // No permitir cambios (solo espacios en blanco)
+        };
+    }
+
+    // validar que solo entren numeros
+    public TextFormatter<String> onlyNumber(){
+        // Crear un filtro para permitir solo números
+        TextFormatter<String> formatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*")) {
+                return change;  // Permitir cambios si la nueva entrada son solo números
+            }
+            return null;  // No permitir cambios si la nueva entrada contiene otros caracteres
+        });
+
+        return formatter;
+    }
+
+    public UnaryOperator<TextFormatter.Change> validateSpacesAndNumbers() {
+        return change -> {
+            String newText = change.getControlNewText();
+
+            // Permitir el cambio si la nueva cadena es vacía o no contiene solo espacios en blanco
+            if (newText.isEmpty() || !newText.trim().isEmpty()) {
+                // También validar que la nueva entrada son solo números
+                if (newText.matches("\\d*")) {
+                    return change;  // Permitir cambios si la nueva entrada cumple ambas condiciones
+                }
+            }
+
+            return null;  // No permitir cambios (solo espacios en blanco o no son solo números)
         };
     }
 

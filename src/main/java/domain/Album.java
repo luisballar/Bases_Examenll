@@ -1,47 +1,40 @@
 package domain;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.bson.Document;
 
 import java.util.Arrays;
 
 public class Album {
-    private SimpleStringProperty albumID;
+    private SimpleIntegerProperty albumID;
     private SimpleStringProperty name;
     private SimpleStringProperty genre;
     private SimpleStringProperty year;
 
     public Album(Document document) {
-        this.albumID = new SimpleStringProperty(document.getString("_id"));
+        this.albumID = new SimpleIntegerProperty(document.getInteger("_id"));
         this.name = new SimpleStringProperty(document.getString("title"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
         this.year = new SimpleStringProperty(document.getString("year_release"));
     }
 
     public Album(Document document, String text) {
-        this.albumID = new SimpleStringProperty(document.getString("_id"));
+        this.albumID = new SimpleIntegerProperty(document.getInteger("_id"));
         this.name = new SimpleStringProperty(document.getString("title"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
         this.year = getYear(document);
     }
 
-
-    public Album(SimpleStringProperty albumID, SimpleStringProperty name, SimpleStringProperty genre, SimpleStringProperty year) {
-        this.albumID = albumID;
-        this.name = name;
-        this.genre = genre;
-        this.year = year;
-    }
-
-    public String getAlbumID() {
+    public int getAlbumID() {
         return albumID.get();
     }
 
-    public SimpleStringProperty albumIDProperty() {
+    public SimpleIntegerProperty albumIDProperty() {
         return albumID;
     }
 
-    public void setAlbumID(String albumID) {
+    public void setAlbumID(int albumID) {
         this.albumID.set(albumID);
     }
 

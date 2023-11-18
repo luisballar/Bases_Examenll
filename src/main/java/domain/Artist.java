@@ -1,41 +1,42 @@
 package domain;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.bson.Document;
 
 import java.util.Arrays;
 
 public class Artist {
-    private SimpleStringProperty artistID;
+    private SimpleIntegerProperty artistID;
     private SimpleStringProperty name;
     private SimpleStringProperty nationality;
     private SimpleStringProperty genre;
 
 
     public Artist(Document document){
-        this.artistID = new SimpleStringProperty(document.getString("_id"));
+        this.artistID = new SimpleIntegerProperty(document.getInteger("_id"));
         this.name = new SimpleStringProperty(document.getString("name"));
         this.nationality = new SimpleStringProperty(document.getString("nationality"));
         this.genre = new SimpleStringProperty(document.getString("genre"));
     }
 
     public Artist(Document document, String text){
-        this.artistID = new SimpleStringProperty(document.getString("_id"));
-        this.name = new SimpleStringProperty(document.getString("artist_name"));
+        this.artistID = new SimpleIntegerProperty(document.getInteger("_id"));
+        this.name = new SimpleStringProperty(document.getString("name"));
         this.nationality = getNationality(document); // traer enmascarado
         this.genre = new SimpleStringProperty(document.getString("genre"));
 
     }
 
-    public String getArtistID() {
+    public int getArtistID() {
         return artistID.get();
     }
 
-    public SimpleStringProperty artistIDProperty() {
+    public SimpleIntegerProperty artistIDProperty() {
         return artistID;
     }
 
-    public void setArtistID(String artistID) {
+    public void setArtistID(int artistID) {
         this.artistID.set(artistID);
     }
 
