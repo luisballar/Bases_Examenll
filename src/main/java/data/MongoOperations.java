@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import domain.Album;
 import domain.Artist;
 import domain.Song;
@@ -14,6 +15,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.*;
@@ -360,6 +362,42 @@ public class MongoOperations {
             return null;
         }
     }
+
+
+    // delete docs
+    public void updateArtist(int idField, String name, String nationality, String genre) {
+        // crear un filtro para especificar los documentos que deseas borrar
+
+        Bson filter = Filters.eq("_id",idField); // identifica el documento
+
+        Bson doc = Updates.combine(
+                Updates.set("name", name),
+                Updates.set("nationality", nationality),
+                Updates.set("genre", genre)
+        );
+
+        collection.updateOne(filter,doc); // actualiza el documento solicitado
+        System.out.println("Documento Actualizado");
+
+    }
+
+    public void updateAlbum(int idField, String title, String genre, String year) {
+        // crear un filtro para especificar los documentos que deseas borrar
+
+        Bson filter = Filters.eq("_id",idField); // identifica el documento
+
+        Bson doc = Updates.combine(
+                Updates.set("title", title),
+                Updates.set("genre", genre),
+                Updates.set("year_release", year)
+        );
+
+        collection.updateOne(filter,doc); // actualiza el documento solicitado
+        System.out.println("Documento Actualizado");
+
+    }
+
+
 
 }
 

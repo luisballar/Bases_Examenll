@@ -286,6 +286,33 @@ public class ArtistWindow implements Initializable {
 
     @FXML
     void updateButton_clicked(ActionEvent event) {
+        if(selecteArtist != null) {
+            if (op.exists(selecteArtist.getArtistID()) != null) {
+
+                op.updateArtist(selecteArtist.getArtistID(), nameField.getText(), nationalityBox.getValue(), genreBox.getValue());
+
+
+            } else {
+                alertMessage = new Alert(Alert.AlertType.ERROR);
+                alertMessage.setTitle("Error al Eliminar");
+                alertMessage.setHeaderText(null);
+                alertMessage.setContentText("No existe ese ID");
+                alertMessage.show();
+            }
+
+            nameField.clear();
+            nationalityBox.setValue(null);
+            genreBox.setValue(null);
+
+            op.fetchAndDisplayDataArtist(tableView);
+            configureTable();
+        }else {
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Actualizar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("Debe seleccionar un Artista");
+            alertMessage.show();
+        }
 
     }
 
@@ -341,6 +368,8 @@ public class ArtistWindow implements Initializable {
 
         selecteArtist = tableView.getSelectionModel().getSelectedItem();
         nameField.setText(selecteArtist.getName());
+        nationalityBox.getSelectionModel().select(selecteArtist.getNationality());
+        genreBox.getSelectionModel().select(selecteArtist.getGenre());
 
     }
 

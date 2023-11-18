@@ -300,14 +300,42 @@ public class AlbumWindow implements Initializable {
 
         selectedAlbum = tableView.getSelectionModel().getSelectedItem();
         nameField.setText(selectedAlbum.getName());
-        System.out.println(selectedAlbum);
+        albumBox.getSelectionModel().select(selectedAlbum.getGenre());
+        yearChoiceBox.getSelectionModel().select(selectedAlbum.getYear());
+
 
     }
 
     @FXML
     void updateButton_clicked(ActionEvent event) {
+        if(selectedAlbum != null) {
+            if (op.exists(selectedAlbum.getAlbumID()) != null) {
+
+                op.updateArtist(selectedAlbum.getAlbumID(), nameField.getText(), albumBox.getValue(), yearChoiceBox.getValue());
 
 
+            } else {
+                alertMessage = new Alert(Alert.AlertType.ERROR);
+                alertMessage.setTitle("Error al Eliminar");
+                alertMessage.setHeaderText(null);
+                alertMessage.setContentText("No existe ese ID");
+                alertMessage.show();
+            }
+
+            nameField.clear();
+            albumBox.setValue(null);
+            yearChoiceBox.setValue(null);
+
+            op.fetchAndDisplayDataAlbum(tableView);
+            configureTable();
+
+        }else{
+            alertMessage = new Alert(Alert.AlertType.ERROR);
+            alertMessage.setTitle("Error al Actualizar");
+            alertMessage.setHeaderText(null);
+            alertMessage.setContentText("Debe seleccionar un Album");
+            alertMessage.show();
+        }
     }
 
     @FXML
