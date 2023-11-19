@@ -368,10 +368,13 @@ public class ArtistWindow implements Initializable {
     void MouseClicked(MouseEvent event) {
 
         selecteArtist = tableView.getSelectionModel().getSelectedItem();
-        nameField.setText(selecteArtist.getName());
-        nationalityBox.getSelectionModel().select(selecteArtist.getNationality());
-        genreBox.getSelectionModel().select(selecteArtist.getGenre());
-        addButton.setDisable(true);
+        if(selecteArtist != null){
+            nameField.setText(selecteArtist.getName());
+            nationalityBox.getSelectionModel().select(selecteArtist.getNationality());
+            genreBox.getSelectionModel().select(selecteArtist.getGenre());
+            addButton.setDisable(true);
+        }
+
 
     }
 

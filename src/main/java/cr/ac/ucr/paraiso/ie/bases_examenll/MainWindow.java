@@ -348,6 +348,7 @@ public class MainWindow implements Initializable {
                 actual,
                 exitBut,
                 "albumWindow.fxml");
+
     }
 
     @FXML
@@ -373,13 +374,15 @@ public class MainWindow implements Initializable {
     void MouseClicked(MouseEvent event) {
 
         selectedSong = tableView.getSelectionModel().getSelectedItem();
+        if(selectedSong != null){
+            nameField.setText(selectedSong.getTitle());
+            genreBox.getSelectionModel().select(selectedSong.getGenre());
+            albumBox.getSelectionModel().select(selectedSong.getAlbum());
+            artisteBox.getSelectionModel().select(selectedSong.getArtist());
+            artisteBox.setDisable(true);
+            addButton.setDisable(true);
+        }
 
-        nameField.setText(selectedSong.getTitle());
-        genreBox.getSelectionModel().select(selectedSong.getGenre());
-        albumBox.getSelectionModel().select(selectedSong.getAlbum());
-        artisteBox.getSelectionModel().select(selectedSong.getArtist());
-        artisteBox.setDisable(true);
-        addButton.setDisable(true);
 
 
     }

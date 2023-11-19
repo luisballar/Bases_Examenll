@@ -303,12 +303,15 @@ public class AlbumWindow implements Initializable {
     void MouseClicked(MouseEvent event) {
         selectedAlbum = tableView.getSelectionModel().getSelectedItem();
 
-        nameField.setText(selectedAlbum.getName());
-        albumBox.getSelectionModel().select(selectedAlbum.getGenre());
-        yearChoiceBox.getSelectionModel().select(selectedAlbum.getYear());
-        artistBox.getSelectionModel().select(selectedAlbum.getArtist());
-        artistBox.setDisable(true);
-        addButton.setDisable(true);
+        if(selectedAlbum != null){
+            nameField.setText(selectedAlbum.getName());
+            albumBox.getSelectionModel().select(selectedAlbum.getGenre());
+            yearChoiceBox.getSelectionModel().select(selectedAlbum.getYear());
+            artistBox.getSelectionModel().select(selectedAlbum.getArtist());
+            artistBox.setDisable(true);
+            addButton.setDisable(true);
+        }
+
 
     }
 
