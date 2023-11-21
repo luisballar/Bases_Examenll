@@ -158,6 +158,7 @@ public class ArtistWindow implements Initializable {
             }
 
             nameField.clear();
+            nameField.setDisable(false);
             nationalityBox.setValue(null);
             genreBox.setValue(null);
             logicDelete.setSelected(false);
@@ -283,7 +284,7 @@ public class ArtistWindow implements Initializable {
         }else if(selecteArtist != null){
             if (op.exists(selecteArtist.getArtistID()) != null) {
 
-                op.updateArtist(selecteArtist.getArtistID(), nameField.getText(), nationalityBox.getValue(), genreBox.getValue());
+                op.updateArtist(selecteArtist.getArtistID(), nationalityBox.getValue(), genreBox.getValue());
 
 
             } else {
@@ -293,6 +294,7 @@ public class ArtistWindow implements Initializable {
             }
 
             nameField.clear();
+            nameField.setDisable(false);
             nationalityBox.setValue(null);
             genreBox.setValue(null);
             addButton.setDisable(false);
@@ -306,6 +308,7 @@ public class ArtistWindow implements Initializable {
     @FXML
     void setMouseClicked(MouseEvent event) {
         nameField.clear();
+        nameField.setDisable(false);
         genreBox.setValue(null);
         nationalityBox.setValue(null);
         tableView.getSelectionModel().clearSelection();
@@ -370,6 +373,7 @@ public class ArtistWindow implements Initializable {
         selecteArtist = tableView.getSelectionModel().getSelectedItem();
         if(selecteArtist != null){
             nameField.setText(selecteArtist.getName());
+            nameField.setDisable(true);
             nationalityBox.getSelectionModel().select(selecteArtist.getNationality());
             genreBox.getSelectionModel().select(selecteArtist.getGenre());
             addButton.setDisable(true);

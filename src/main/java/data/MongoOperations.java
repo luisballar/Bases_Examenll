@@ -553,13 +553,12 @@ public class MongoOperations {
 
 
     // delete docs
-    public void updateArtist(int idField, String name, String nationality, String genre) {
+    public void updateArtist(int idField, String nationality, String genre) {
         // crear un filtro para especificar los documentos que deseas borrar
 
         Bson filter = Filters.eq("_id",idField); // identifica el documento
 
         Bson doc = Updates.combine(
-                Updates.set("name", name),
                 Updates.set("nationality", nationality),
                 Updates.set("genre", genre)
         );

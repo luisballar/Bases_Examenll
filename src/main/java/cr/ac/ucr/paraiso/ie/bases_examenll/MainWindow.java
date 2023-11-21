@@ -109,12 +109,14 @@ public class MainWindow implements Initializable {
     void addButton_clcked(ActionEvent event) {
 
         // validar si todos los campos estan lleno
-        if(genreBox.getValue() != null && artisteBox.getValue() != null && albumBox.getValue() != null && !nameField.getText().isEmpty()){
+        if(genreBox.getValue() != null && artisteBox.getValue() != null  && !nameField.getText().isEmpty()){
+
+            String album = albumBox.getValue() == null?"SIN ALBUM":albumBox.getValue().trim();
 
             Document document = new Document("_id", op.asignaID())
                     .append("title", nameField.getText().trim())
                     .append("genre", genreBox.getValue().trim())
-                    .append("album", albumBox.getValue().trim())
+                    .append("album", album)
                     .append("artist", artisteBox.getValue().trim())
                     .append("logic_delete", 0);
 
